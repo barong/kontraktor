@@ -5,7 +5,7 @@
   <!-- Basic Page Needs
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
   <meta charset="utf-8">
-  <title>Your page title here :)</title>
+  <title>kontraktor 3</title>
   <meta name="description" content="">
   <meta name="author" content="">
 
@@ -15,7 +15,7 @@
 
   <!-- FONT
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
 
   <!-- CSS
   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -27,6 +27,7 @@
   <link rel="icon" type="image/png" href="images/favicon.png">
 
 <style>
+
   .mylink {
     font-style: normal;
     font-weight: bold;
@@ -34,12 +35,413 @@
     padding: 6px;
     text-decoration: none;
   }
+
+  .branditem {
+    padding: 12px;
+    transition: background-color 0.5s ease;
+    margin-top: 2em;
+  }
+
+  .branditem:hover {
+    background-color: #D9EDFF;
+  }
+
+  .brandhead {
+    color: #3d85c6;
+    height: 8em;
+  }
+
+  .mhead {
+    background-color: #3d85c6;
+    color: white;
+    font-family: sans-serif;
+    font-style: normal;
+    text-decoration: none;
+    padding-bottom: 20px;
+    padding-left: 20px;
+  }
+
 </style>
 
 </head>
 <body>
 
-<b>Hello</b>
+<div class="mhead">
+  <b style="font-size: 3em;font-weight: bold;">> kontraktor 3</b> <br>
+  <i style="font-size: 1.2em;">Service oriented, distributed Actors designed for Java 8</i>
+</div>
+
+<div class="" style="padding: 30px; background: #f0f0f0;">
+  <div class="row u-max-full-width">
+    <div class="twelve columns u-max-full-width">
+      <a href="https://github.com/RuedigerMoeller/kontraktor" target="_blank" class="mylink">View on github</a>
+      <a href="https://github.com/RuedigerMoeller/kontraktor/wiki/Kontraktor-3" target="_blank" class="mylink">Documentation</a>
+      <a href="https://github.com/RuedigerMoeller/kontraktor/releases" target="_blank" class="mylink">Download</a>
+      <a class="mylink">Maven</a>
+    </div>
+  </div>
+</div>
+
+<div class="container u-full-width">
+  <div class="row">
+
+    <div class="three columns branditem">
+      <table>
+        <tr class="brandhead">
+          <td>
+            <i class="fa fa-life-ring fa-4x">
+            </i>
+          </td>
+          <td>
+            <b>Simpler concurrency</b>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            Partition your application into message passing single threaded services. Scale out and distribute as needed at deployment time.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="three columns branditem">
+      <table>
+        <tr class="brandhead">
+          <td>
+            <i class="fa fa-share-alt fa-4x">
+            </i>
+          </td>
+          <td>
+            <b>Write once, wire everywhere</b>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            Use TCP, WebSockets, Http-LongPoll or in-process: message transport and encoding is configurable. No need
+            to change your application code.<br>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="three columns branditem">
+      <table>
+        <tr class="brandhead">
+          <td>
+            <i class="fa fa-comments-o fa-4x">
+            </i>
+          </td>
+          <td>
+            <b>JavaScript Interop</b>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            Kontraktor brings back simplicity and lightweightness to server side Java. <br>
+            <del>App Container</del>,
+            <del>XML Hell</del>,
+            <del>Annotation Overflow</del>,
+            <del>Classloader madness</del>,
+            <del>slow turnaround</del>,
+            <del>software bureaucracy</del>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="three columns branditem">
+      <table>
+        <tr class="brandhead">
+          <td>
+            <i class="fa fa-rocket fa-4x">
+            </i>
+          </td>
+          <td>
+            <b>High performance</b>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2">
+            Expect kontraktor to outperform competition by an order
+            of magnitude for many use cases.
+          </td>
+        </tr>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<div style="height: 10em;"></div>
+
+<style type="text/css">
+.ln { color: rgb(0,0,0); font-weight: normal; font-style: normal; }
+.s0 { color: rgb(204,120,50); }
+.s1 { color: rgb(169,183,198); }
+.s2 { color: rgb(106,135,89); }
+.s4 { color: rgb(104,151,187); }
+</style>
+
+<div class="container">
+
+  <div class="row">
+<h3>Boilerplate free typed Actors</h3>
+
+Kontraktor uses plain old methods to implicitely define Actor messages. So no need to define "Message"-Classes. This way
+Inheritance, Interfaces, Refactoring, Code Completion work same as with Pojo's. <br><br>
+
+  </div>
+
+  <div class="row" style="background-color: #222222; font-size: smaller; padding-left: 8px; padding-top: 8px;">
+<pre>
+<span class="s0">public class </span><span class="s1">HelloActor </span><span class="s0">extends </span><span class="s1">Actor&lt;HelloActor&gt; {
+
+    </span><span class="s0">public </span><span class="s1">IPromise greet( String name ) {
+        </span><span class="s0">return new </span><span class="s1">Promise(</span><span class="s2">&quot;Hello &quot;</span><span class="s1">+name)</span><span class="s0">;</span><span class="s1">
+    }
+
+    </span><span class="s0">public static void </span><span class="s1">main(String a[]) {
+        HelloActor myService = AsActor(HelloActor.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span><span class="s1">
+        System.out.println( myService.greet(</span><span class="s2">&quot;Kontraktor&quot;</span><span class="s1">).await() )</span><span class="s0">;</span><span class="s1">
+    }
+}</span></pre>
+
+  </div>
+</div>
+
+
+<div style="height: 5em;"></div>
+
+
+<div class="container">
+
+  <div class="row">
+
+  <h3>Pluggable network distribution</h3>
+
+Transport and message wire format are pluggable options.<br><br>
+
+  </div>
+
+  <div class="row" style="background-color: #222222; font-size: smaller; padding-left: 8px; padding-top: 8px;">
+<pre>
+<span class="s1">HelloActor myService = AsActor(HelloActor.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span><span class="s0">
+
+<span class="s0">new </span><span class="s1">WebSocketPublisher()
+    .facade(myService)
+    .hostName(</span><span class="s2">&quot;localhost&quot;</span><span class="s1">)
+    .urlPath(</span><span class="s2">&quot;/hello&quot;</span><span class="s1">)
+    .port(</span><span class="s4">8080</span><span class="s1">)
+    .serType(SerializerType.FSTSer)
+    .publish()</span><span class="s0">;</span></span></pre>
+
+  </div>
+
+
+  <div class="row">
+    <br>
+    Client connecting:
+    <br><br>
+  </div>
+
+  <div class="row" style="background-color: #222222; font-size: smaller; padding-left: 8px; padding-top: 8px;">
+<pre>
+<span class="s1">HelloActor myService = (HelloActor)</span>
+    <span class="s0">new</span><span class="s1"> WebSocketConnectable(HelloActor.</span><span class="s0">class</span><span class="s1"> ,</span><span class="s2">&quot;http://localhost:8080/hello&quot;</span><span class="s1">)</span>
+      <span class="s1">.serType(SerializerType.FSTSer)
+      .connect(</span><span class="s0">null</span><span class="s1">)
+      .await()</span><span class="s0">;</span>
+<span class="s1">System.out.println( myService.greet(</span><span class="s2">&quot;Kontraktor&quot;</span><span class="s1">).await() )</span><span class="s0">;</span></pre>
+
+  </div>
+
+  <div class="row">
+    <br>
+    JavaScript Client connecting:
+    <br><br>
+  </div>
+<div class="row" style="background-color: #f0f0f0; font-size: smaller; padding-left: 8px; padding-top: 8px;">
+<pre>
+  jsk.connect(<span class="s2">&quot;ws://localhost:8080/ws&quot;</span>,<span class="s2">&quot;WS&quot;</span>)
+  .then( function( app, error ) {
+    app.ask(<span class="s2">&quot;greet&quot;, &quot;kontraktor&quot;</span>)
+      .then( <span class="s0">function</span>(res,err) {
+        console.log(<span class="s2">&quot;greeting:&quot;</span>+res);
+      }
+  };
+</pre>
+</div>
+
+<div style="height: 5em;"></div>
+
+
+<div class="row">
+
+  <h3>Bureaucracy free Single Page Apps</h3>
+
+  Kontraktor's Http4k manages javascript library dependency, aggregation and minification dynamically if you wish so.
+  JS4k enables seamless connectivity and object encoding between Java and JavaScript. All this is done in a <b>composable, non-frameworky</b> fashion
+  enabling integration with advanced JavaScript client frameworks and many open source libraries and components.<br>
+  Due to the non-blocking nature of Actor's, scale to thousands of sessions per thread Node.js'que alike and beyond.<br>
+  <b>With Http4k, server push is default.</b>
+  <br><br>
+</div>
+
+<div class="row" style="background-color: #222222; font-size: smaller; padding-left: 8px; padding-top: 8px;">
+<pre>
+<span class="s4">// create server actor</span><span class="s1">
+MyHttpApp app = AsActor(MyHttpApp.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span><span class="s1">
+
+Http4K.Build(</span><span class="s2">&quot;localhost&quot;</span><span class="s2">, </span><span class="s4">8080</span><span class="s1">)
+    .fileRoot( </span><span class="s2">&quot;/&quot;</span><span class="s1">, </span><span class="s1">root)
+    .httpAPI(  </span><span class="s2">&quot;/api&quot;</span><span class="s1">, </span><span class="s1">app)
+        .serType(SerializerType.JsonNoRef)
+        .setSessionTimeout(</span><span class="s4">30_000</span><span class="s1">)
+        .build()
+    .websocket(</span><span class="s2">&quot;ws&quot;</span><span class="s1">, </span><span class="s1">app )
+        .serType(SerializerType.JsonNoRef)
+        .build()
+    .resourcePath( </span><span class="s2">&quot;/dyn&quot; </span><span class="s1">)
+        .rootComponent(</span><span class="s2">&quot;app&quot;</span><span class="s1">)
+        .resourcePath(
+            </span><span class="s2">&quot;./web&quot;</span><span class="s2">,</span><span class="s1">
+            </span><span class="s2">&quot;./web/components&quot;</span><span class="s2">,</span><span class="s1">
+            </span><span class="s2">&quot;./web/lib&quot;</span><span class="s1">)
+        .devMode(</span><span class="s0">false</span><span class="s1">)
+        .build()
+    .build()</span><span class="s0">;</span><span class="s1">
+</span></pre>
+
+</div>
+
+<div style="height: 5em;"></div>
+
+<div class="row">
+
+<h3>Performance matters !</h3>
+
+Don't risk failure caused by bogus marketing brag.
+Delivering realistic performance metrics let's engineers properly design & size systems upfront.<br><br>
+Closing the gap between remote and local messaging ensures your system does not slow down or starts behaving whacky when scaling out.
+In addition: <b>The faster the foundation, the faster and straightforward applications can be built.</b> Faster execution time can be traded against lower
+development cost. <br><br>
+High Level programming does not have to be slow. By taking technical details such as buffer, connection management, object encoding
+away from application code, there is opportunity to optimize these til the last drop. <br>
+In-depth knowledge from being the author of one of the fastest
+Java serialization implementations around (fast serialization) enables implementation of a highly tuned & optimized remoting layer, probably
+out of reach for others.
+</div>
+<br>
+<div class="row">
+
+<table>
+<thead>
+<tr>
+<th>Transport</th>
+<th align="center">Throughput tell/sec</th>
+<th align="right">Throughput ask/sec</th>
+<th align="right">supported # Clients</th>
+<th align="right">Use case</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>None (Local)</strong></td>
+<td align="center">7-8 million</td>
+<td align="right">4 million</td>
+<td align="right">n/a (many)</td>
+<td align="right">simpler concurrency model, system scale down</td>
+</tr>
+<tr>
+<td><strong>TCP Blocking</strong></td>
+<td align="center">2.2 million</td>
+<td align="right">1 million</td>
+<td align="right">&lt;500 (2 Threads per client)</td>
+<td align="right">System Interconnect</td>
+</tr>
+<tr>
+<td><strong>TCP NIO</strong></td>
+<td align="center">1.8 million</td>
+<td align="right">0.8 million</td>
+<td align="right">&gt;10_000</td>
+<td align="right">Service Provider, System interconnect</td>
+</tr>
+<tr>
+<td><strong>WebSocket</strong></td>
+<td align="center">2 million</td>
+<td align="right">1 million</td>
+<td align="right">&gt;10_000</td>
+<td align="right">System Interconnect, Serve GUI Clients, Service Provider</td>
+</tr>
+<tr>
+<td><strong>Http-Long Poll</strong></td>
+<td align="center">400_000</td>
+<td align="right">250_000</td>
+<td align="right">&gt;10_000</td>
+<td align="right">Serve GUI + Mobile Clients, Unstable networks</td>
+</tr>
+<tr>
+<td><strong>Http-Long Poll JSON</strong></td>
+<td align="center">200_000</td>
+<td align="right">120_000</td>
+<td align="right">&gt;10_000</td>
+<td align="right">Serve GUI + Mobile Clients, Unstable networks</td>
+</tr>
+</tbody>
+</table>
+
+<ul>
+  <li><b>'tell(int)'</b> = fire and forget message consisting of one integer</li>
+  <li><b>'ask(int)'</b> = request response passing and returning an integer</li>
+</ul>
+
+"Number of clients" is tested with pushing one message to each client each 2 seconds. <br><br>
+
+Of course rates go down once larger objects are transmitted (see documentation). These are point to point single threaded messaging throughput benchmarks, so don't get confused by
+third party benchmarks actually running multiple instances or even clusters, then sum up all messages that have been sent somewhere in parallel ...
+
+</div>
+
+<div style="height: 5em;"></div>
+
+<div class="row">
+  <h3>Credits</h3>
+
+  <ul>
+    <li>undertow.io - a must see. Great + flexible API, breath taking performance</li>
+    <li>Jackson - one of the fastest json parsers featuring an open and intuitive programming API</li>
+    <li>JCTools - ultra fast queues for Java.</li>
+    <li>Apache AsyncHttpClient - for http client implementations.</li>
+    <li>fast-serialization - encoding and sneaky object graph transformations to implement remote calls.</li>
+  </ul>
+
+</div>
+
+<div style="height: 5em;"></div>
+
+</div>
+
+<div class="row" style="background-color: #3d85c6; color: white; padding: 16px; font-size: smaller;">
+  <div class="three columns u-pull-left">
+    (C) 2012-2015 Ruediger Moeller &nbsp;
+    <a class="mylink" style="color: white;" href="http://java-is-the-new-c.blogspot.de/">Blog</a>
+  </div>
+
+  <div class="four columns u-pull-left">
+    Kontraktor is open source and released under the Lesser Gnu Public License (LGPL)
+  </div>
+  <div class="four columns u-pull-left">
+    For Commercial support / Consulting: contact me via twitter
+  </div>
+
+  <div class="one columns u-pull-right">
+<a href="https://twitter.com/moru0011" class="twitter-follow-button" data-show-count="false" data-show-screen-name="false">Follow @moru0011</a>
+<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+  </div>
+
+</div>
+
+
 
 </body>
 </html>
