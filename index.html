@@ -106,7 +106,7 @@
 <div class="container u-full-width">
   <div class="row">
 
-    <div class="three columns branditem">
+    <div class="three columns branditem" onclick="smoothScroll.animateScroll( null, '#boiler' );">
       <table>
         <tr class="brandhead">
           <td>
@@ -125,7 +125,7 @@
       </table>
     </div>
 
-    <div class="three columns branditem">
+    <div class="three columns branditem" onclick="smoothScroll.animateScroll( null, '#plug' );">
       <table>
         <tr class="brandhead">
           <td>
@@ -145,7 +145,7 @@
       </table>
     </div>
 
-    <div class="three columns branditem">
+    <div class="three columns branditem" onclick="smoothScroll.animateScroll( null, '#nomess' );">
       <table>
         <tr class="brandhead">
           <td>
@@ -170,7 +170,7 @@
       </table>
     </div>
 
-    <div class="three columns branditem">
+    <div class="three columns branditem" onclick="smoothScroll.animateScroll( null, '#fast' );">
       <table>
         <tr class="brandhead">
           <td>
@@ -205,7 +205,7 @@
 .s4 { color: rgb(104,151,187); }
 </style>
 
-<div class="container">
+<div id="boiler" class="container">
 
   <div class="row">
 <h3>Boilerplate-free, typed Actors</h3>
@@ -230,13 +230,16 @@ Inheritance, Interfaces, Refactoring, Code Completion work same as with Pojo's. 
 }</span></pre>
 
   </div>
+  <br>
+You might replace Java's 'multithreading/shared data concurrency' model by 'shared-nothing/message passing of single threaded actors'.
+However Kontraktor plays well with idiomatic Java multithreading code. Mix both models as they fit your needs.
 </div>
 
 
 <div style="height: 5em;"></div>
 
 
-<div class="container">
+<div id="plug" class="container">
 
   <div class="row">
 
@@ -298,7 +301,7 @@ Transport and message wire format are pluggable options.<br><br>
 <div style="height: 5em;"></div>
 
 
-<div class="row">
+<div id="nomess" class="row">
 
   <h3>Mess-free Single Page Apps</h3>
 
@@ -339,7 +342,7 @@ Http4K.Build(</span><span class="s2">&quot;localhost&quot;</span><span class="s2
 
 <div style="height: 5em;"></div>
 
-<div class="row">
+<div id="fast" class="row">
 
 <h3>Performance matters !</h3>
 
@@ -460,7 +463,11 @@ third party benchmarks actually running multiple instances or even clusters, the
 
 </div>
 
+<script src="js/smooth-scroll.min.js"></script>
 
+<script>
+  smoothScroll.init();
+</script>
 
 </body>
 </html>
