@@ -418,8 +418,9 @@ development cost. <br><br>
 
 "Number of clients" is tested with pushing one message to each client each 2 seconds. <br><br>
 
-Of course rates go down once larger objects are transmitted (see documentation). These are point to point single threaded messaging throughput benchmarks, so don't get confused by
-third party benchmarks actually running multiple instances or even clusters, then sum up all messages that have been sent somewhere in parallel ...
+Of course rates go down once larger objects are transmitted (see documentation). <b>These are point to point, end ot end single threaded RPC throughput benchmarks</b>
+including <b>encoding, decoding, routing to the right actor/callback</b>, so don't confuse with benchmarks of sending plain byte blobs or
+third party benchmarks actually running multiple instances of an app (or even clusters), then sum up all messages that have been sent somewhere in parallel ...
 
 </div>
 
