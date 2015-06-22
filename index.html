@@ -27,6 +27,10 @@
   <link rel="icon" type="image/png" href="images/favicon.png">
 
 <style>
+  .highlight {
+    background-color: #f0f0f0;
+    padding-left: 8px;
+  }
 
   .mylink {
     font-style: normal;
@@ -98,7 +102,7 @@
       <a href="https://github.com/RuedigerMoeller/kontraktor" target="_blank" class="mylink">View on github</a>
       <a href="https://github.com/RuedigerMoeller/kontraktor/wiki/Kontraktor-3" target="_blank" class="mylink">Documentation</a>
       <a href="https://github.com/RuedigerMoeller/kontraktor/releases" target="_blank" class="mylink">Download</a>
-      <a class="mylink">Maven</a>
+      <a class="mylink" onclick="smoothScroll.animateScroll( null, '#maven' );">Maven</a>
     </div>
   </div>
 </div>
@@ -429,6 +433,36 @@ Of course rates go down once larger objects are transmitted (see documentation).
 including <b>encoding, decoding, routing to the right actor/callback</b>, so don't confuse with benchmarks of sending plain byte blobs or
 benchmarks running multiple instances of an app (or even clusters) summing up all messages that have been sent somewhere in parallel ...
 
+</div>
+
+<div style="height: 5em;"></div>
+
+<div id="maven" class="row">
+  <h3>Maven</h3>
+
+<p>Kontraktor Core (Actors + TCP Remoting), requires Java 8, LGPL Licensed</p>
+
+<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">dependency</span>&gt;
+    &lt;<span class="pl-ent">groupId</span>&gt;de.ruedigermoeller&lt;/<span class="pl-ent">groupId</span>&gt;
+    &lt;<span class="pl-ent">artifactId</span>&gt;kontraktor&lt;/<span class="pl-ent">artifactId</span>&gt;
+    &lt;<span class="pl-ent">version</span>&gt;3.00&lt;/<span class="pl-ent">version</span>&gt;
+&lt;/<span class="pl-ent">dependency</span>&gt;</pre></div>
+
+<p>Kontraktor Http (WebSockets, Http LongPoll, Single Page App + JavaScript interop support), requires Java 8, LGPL Licensed</p>
+
+<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">dependency</span>&gt;
+    &lt;<span class="pl-ent">groupId</span>&gt;de.ruedigermoeller&lt;/<span class="pl-ent">groupId</span>&gt;
+    &lt;<span class="pl-ent">artifactId</span>&gt;kontraktor-http&lt;/<span class="pl-ent">artifactId</span>&gt;
+    &lt;<span class="pl-ent">version</span>&gt;3.00&lt;/<span class="pl-ent">version</span>&gt;
+&lt;/<span class="pl-ent">dependency</span>&gt;</pre></div>
+
+<p>Kontraktor-Bare (Minimalistic standalone Http-LongPoll client [legacy apps, Android] ), requires <strong>Java 7</strong>, Apache 2.0 Licensed</p>
+
+<div class="highlight highlight-xml"><pre>&lt;<span class="pl-ent">dependency</span>&gt;
+    &lt;<span class="pl-ent">groupId</span>&gt;de.ruedigermoeller&lt;/<span class="pl-ent">groupId</span>&gt;
+    &lt;<span class="pl-ent">artifactId</span>&gt;kontraktor-bare&lt;/<span class="pl-ent">artifactId</span>&gt;
+    &lt;<span class="pl-ent">version</span>&gt;3.00&lt;/<span class="pl-ent">version</span>&gt;
+&lt;/<span class="pl-ent">dependency</span>&gt;</pre></div>
 </div>
 
 <div style="height: 5em;"></div>
