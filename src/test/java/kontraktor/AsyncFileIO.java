@@ -100,7 +100,7 @@ public class AsyncFileIO {
     public void testAsyncFile() throws IOException {
         count.set(0);
         String finam = "/tmp/test.data";
-        IOUsingActor tester = Actors.AsActor(IOUsingActor.class);
+        IOUsingActor tester = Actors.asActor(IOUsingActor.class);
         tester.writeFile(finam).await();
         System.out.println("finished writing " + new File(finam).length());
         tester.readFile(finam).await();

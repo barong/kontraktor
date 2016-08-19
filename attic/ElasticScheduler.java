@@ -235,7 +235,7 @@ public class ElasticScheduler implements Scheduler, Monitorable {
         }
         if ( th.isIsolated() ) {
             if (DEBUG_SCHEDULING)
-                Log.Info(this, "  was decoupled one.");
+                Log.sInfo(this, "  was decoupled one.");
             isolateCount.decrementAndGet();
         }
 //        throw new RuntimeException("Oops. Unknown Thread");
@@ -386,7 +386,7 @@ public class ElasticScheduler implements Scheduler, Monitorable {
             long otherQSizes = minLoadThread.getAccumulatedQSizes();
             if (4*otherQSizes/3>qSizes) {
                 if (REALLY_DEBUG_SCHEDULING) {
-                    Log.Info(this, "no payoff, skip rebalance load:"+qSizes+" other:"+otherQSizes);
+                    Log.sInfo(this, "no payoff, skip rebalance load:" + qSizes + " other:" + otherQSizes);
                 }
                 return;
             }
@@ -426,7 +426,7 @@ public class ElasticScheduler implements Scheduler, Monitorable {
                     minLoadThread = threads[i];
                     minLoadThread.start();
                     if (DEBUG_SCHEDULING)
-                        Log.Info(this,"created new thread to unblock "+dispatcherThread.getName());
+                        Log.sInfo(this, "created new thread to unblock " + dispatcherThread.getName());
                 }
             }
             if ( minLoadThread == null ) {
@@ -437,7 +437,7 @@ public class ElasticScheduler implements Scheduler, Monitorable {
                 minLoadThread.setIsolated(true);
                 isolateCount.incrementAndGet();
                 if (DEBUG_SCHEDULING)
-                    Log.Info(this,"created new thread to unblock already isolated "+dispatcherThread.getName());
+                    Log.sInfo(this, "created new thread to unblock already isolated " + dispatcherThread.getName());
             }
             for (int i = 0; i < qList.length; i++)
             {

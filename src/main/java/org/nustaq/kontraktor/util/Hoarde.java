@@ -43,7 +43,7 @@ public class Hoarde<T extends Actor> {
     public Hoarde(int numActors, Class<T> actor) {
         actors = new Actor[numActors];
         for (int i = 0; i < actors.length; i++) {
-            actors[i] = Actors.AsActor(actor);
+            actors[i] = Actors.asActor(actor);
         }
     }
 
@@ -56,7 +56,7 @@ public class Hoarde<T extends Actor> {
     public Hoarde(int numActors, Class<T> actor, Scheduler sched) {
         actors = new Actor[numActors];
         for (int i = 0; i < actors.length; i++) {
-            actors[i] = Actors.AsActor(actor, sched);
+            actors[i] = Actors.asActor(actor, sched);
         }
     }
 

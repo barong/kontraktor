@@ -94,7 +94,7 @@ public class Dining {
     }
 
     public static void runServer() throws Exception {
-        TCPServerConnector.Publish(Actors.AsActor(Table.class), 6789, null);
+        TCPServerConnector.Publish(Actors.asActor(Table.class), 6789, null);
     }
 
     static void runClient() throws Exception {
@@ -115,7 +115,7 @@ public class Dining {
             case 1: runClient(); break;
             default:
                 // run them in process
-                runPhilosophers(Actors.AsActor(Table.class));
+                runPhilosophers(Actors.asActor(Table.class));
         }
     }
 

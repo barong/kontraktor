@@ -115,19 +115,19 @@ public class _AsyncClientSocket implements Runnable {
                             try {
                                 channel.close();
                             } catch (IOException e) {
-                                Log.Warn(this, e);
+                                Log.sWarn(this, e);
                             }
                         }
                     }
                 }
             }
         } catch (Throwable e) {
-            Log.Warn(this,e,"");
+            Log.sWarn(this, e, "");
             Actors.reject(e);
             try {
                 close();
             } catch (IOException e1) {
-                Log.Warn(this, e, "");
+                Log.sWarn(this, e, "");
             }
         }
         if ( ! isClosed() ) {
@@ -183,7 +183,7 @@ public class _AsyncClientSocket implements Runnable {
     }
 
     public static void main(String a[]) throws InterruptedException {
-        CLSActor act = Actors.AsActor(CLSActor.class);
+        CLSActor act = Actors.asActor(CLSActor.class);
         act.connect();
         Thread.sleep(10000000l);
     }

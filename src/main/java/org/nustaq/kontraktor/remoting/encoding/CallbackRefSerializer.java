@@ -67,7 +67,7 @@ public class CallbackRefSerializer extends FSTBasicObjectSerializer {
             try {
                 reg.receiveCBResult(chan.get(),id,result,error);
             } catch (Exception e) {
-                Log.Warn(this, e, "");
+                Log.sWarn(this, e, "");
                 FSTUtil.rethrow(e);
             }
         }
@@ -79,7 +79,7 @@ public class CallbackRefSerializer extends FSTBasicObjectSerializer {
                 return true;
             boolean closed = chan.get().isClosed();
             if ( closed ) {
-                Log.Error(this, "registry alive, but socket closed");
+                Log.sError(this, "registry alive, but socket closed");
             }
             return closed;
         }

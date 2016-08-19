@@ -19,9 +19,6 @@ public class PatchingRecord extends RecordWrapper {
 
     public PatchingRecord(Record record) {
         super(record);
-        if ( record instanceof RecordWrapper ) {
-            int debug = 1;
-        }
     }
 
     public boolean isModified() {
@@ -77,12 +74,16 @@ public class PatchingRecord extends RecordWrapper {
         return super.equals(obj);
     }
 
-    public <K> void reset(Record<K> input) {
+    public void reset(Record input) {
         record = input;
         override = null;
     }
 
-    public <K> UpdateMessage<K> getUpdates() {
+    public boolean hasUpdates() {
+        return override != null;
+    }
+
+    public  UpdateMessage getUpdates() {
         if ( override == null )
             return null;
         Object update[] = new Object[override.size()*2];
@@ -92,10 +93,10 @@ public class PatchingRecord extends RecordWrapper {
             update[idx++] = next.getKey();
             update[idx++] = next.getValue();
         }
-        return RLUtil.get().update((K) getKey(),update);
+        return RLUtil.get().update(getKey(),update);
     }
 
-    public <K> Record<K> unwrapOrCopy() {
+    public  Record unwrapOrCopy() {
         if ( override == null )
             return record;
         MapRecord res = MapRecord.New(getKey());

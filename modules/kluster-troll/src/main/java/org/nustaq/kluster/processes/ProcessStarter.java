@@ -70,7 +70,7 @@ public class ProcessStarter extends Actor<ProcessStarter> {
             try {
                 this.name = InetAddress.getLocalHost().getHostName();
             } catch (UnknownHostException e) {
-                Log.Error(this,e);
+                Log.sError(this, e);
                 this.name = "unknown";
             }
         } else {
@@ -80,7 +80,7 @@ public class ProcessStarter extends Actor<ProcessStarter> {
             try {
                 options.host = InetAddress.getLocalHost().getHostName();
             } catch (UnknownHostException e) {
-                Log.Error(this,e);
+                Log.sError(this, e);
                 options.host = "unknown";
             }
         } else {
@@ -431,7 +431,7 @@ public class ProcessStarter extends Actor<ProcessStarter> {
             self().distribute( STARTED, pi, null);
             return resolve(pi);
         } catch (IOException e) {
-            Log.Warn(this, e);
+            Log.sWarn(this, e);
             return reject(e);
         }
     }
@@ -466,7 +466,7 @@ public class ProcessStarter extends Actor<ProcessStarter> {
         }
 
         options.underride(locateProps(0,new File("./"),"troll.properties"));
-        ProcessStarter ps = Actors.AsActor(ProcessStarter.class);
+        ProcessStarter ps = Actors.asActor(ProcessStarter.class);
         ps.init(options);
 
         new TCPNIOPublisher()

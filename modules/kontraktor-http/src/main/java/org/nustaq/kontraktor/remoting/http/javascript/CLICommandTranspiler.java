@@ -3,7 +3,6 @@ package org.nustaq.kontraktor.remoting.http.javascript;
 import org.nustaq.kontraktor.util.Log;
 
 import java.io.*;
-import java.util.List;
 
 /**
  * Created by ruedi on 21.05.16.
@@ -39,7 +38,7 @@ public abstract class CLICommandTranspiler implements TranspilerHook {
                 if (res != 0 ) {
                     throw new TranspileException("transpiler returned "+res+" on "+source.getAbsolutePath());
                 } else {
-                    Log.Info(this, "success transpiling " + source.getAbsolutePath() + " to " + f.getAbsolutePath());
+                    Log.sInfo(this, "success transpiling " + source.getAbsolutePath() + " to " + f.getAbsolutePath());
                 }
             } catch (InterruptedException e) {
                 throw new TranspileException(e);

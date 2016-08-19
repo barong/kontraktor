@@ -55,7 +55,7 @@ public class JSR356ClientConnector implements ActorClientConnector {
     static RemotingHelper get() {
         synchronized (singleton) {
             if ( singleton.get() == null ) {
-                singleton.set(Actors.AsActor(RemotingHelper.class));
+                singleton.set(Actors.asActor(RemotingHelper.class));
             }
             return singleton.get();
         }
@@ -121,13 +121,13 @@ public class JSR356ClientConnector implements ActorClientConnector {
         @OnClose
         public void onClose(Session userSession, CloseReason reason) {
             this.session = null;
-            Log.Info(this, "Connection closed " + reason);
+            Log.sInfo(this, "Connection closed " + reason);
             sink.sinkClosed();
         }
 
         @OnError
         public void onError( Throwable th ) {
-            Log.Warn(this,th);
+            Log.sWarn(this, th);
         }
 
         @OnMessage
@@ -167,7 +167,7 @@ public class JSR356ClientConnector implements ActorClientConnector {
                             try {
                                 close();
                             } catch (IOException e) {
-                                Log.Warn(this,e);
+                                Log.sWarn(this, e);
                             }
                         });
                     }

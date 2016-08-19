@@ -40,7 +40,7 @@ public class TicketMachineTest {
 
         public void init() {
             machine = new TicketMachine();
-            worker = Actors.AsActor(AsyncWork.class);
+            worker = Actors.asActor(AsyncWork.class);
             seqTracker = new HashMap<>();
         }
 
@@ -77,7 +77,7 @@ public class TicketMachineTest {
 
     @Test
     public void test() throws InterruptedException {
-        TicketedProcessor proc = Actors.AsActor(TicketedProcessor.class);
+        TicketedProcessor proc = Actors.asActor(TicketedProcessor.class);
         proc.init();
         String stocks[] = { "ALV", "BMW", "FDAX", "ODAX", "FGBL", "CCIP", "OGBL" };
         int seq[] = new int[stocks.length];

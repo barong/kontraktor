@@ -100,11 +100,11 @@ public class _JSR356ServerConnector extends Endpoint implements ActorServerConne
             try {
                 session.getBasicRemote().sendBinary(ByteBuffer.wrap(message));
             } catch (IOException ex) {
-                Log.Warn(this, ex);
+                Log.sWarn(this, ex);
                 try {
                     close();
                 } catch (IOException e) {
-                    Log.Warn(this, ex);
+                    Log.sWarn(this, ex);
                 }
             }
         }

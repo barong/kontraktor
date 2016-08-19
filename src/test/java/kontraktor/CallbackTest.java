@@ -54,7 +54,7 @@ public class CallbackTest {
         CBTActor cbt;
 
         public void init() {
-            cbt = Actors.AsActor(CBTActor.class, new SimpleScheduler(10000)); //  ensure different thread
+            cbt = Actors.asActor(CBTActor.class, new SimpleScheduler(10000)); //  ensure different thread
             cbt.method(new Callback() {
                 @Override
                 public void complete(Object result, Object error) {
@@ -106,13 +106,13 @@ public class CallbackTest {
 
     @Test
     public void callbackTest() throws InterruptedException {
-        CBTCallActor act = Actors.AsActor(CBTCallActor.class);
+        CBTCallActor act = Actors.asActor(CBTCallActor.class);
         act.init();
         for (int i = 0; i < 10000; i++) // higher vals create deadlock, detect it !
         {
             act.sendPing();
         }
-        final CBTActor cbt = Actors.AsActor(CBTActor.class);
+        final CBTActor cbt = Actors.asActor(CBTActor.class);
         cbt.pongong( (r,e) -> System.out.println(r) );
         cbt.method(new Callback() {
             @Override

@@ -272,7 +272,7 @@ public class ActorProxyFactory {
                             Object annot = availableParameterAnnotation[k];
                             if ( annot.toString().indexOf("kontraktor.annotations.InThread") > 0 ) {
                                 if ( parameterTypes[j].getName().equals(Callback.class.getName()) ) {
-                                    Log.Info(this,"InThread unnecessary when using built in Callback class. method:"+originalMethod+" clz:"+orig);
+                                    Log.sInfo(this, "InThread unnecessary when using built in Callback class. method:" + originalMethod + " clz:" + orig);
                                     continue;
                                 }
                                 if ( ! parameterTypes[j].isInterface() )

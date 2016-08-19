@@ -105,7 +105,7 @@ public class KxStreamServer extends Actor<KxStreamServer> {
 
     public static void main(String[] args) {
 
-        KxStreamServer server = Actors.AsActor(KxStreamServer.class,256000); // give fat queue
+        KxStreamServer server = Actors.asActor(KxStreamServer.class, 256000); // give fat queue
         server.init();
         TCPNIOPublisher publisher = new TCPNIOPublisher(server, 7890);
         publisher.publish(actor -> System.out.println("actor " + actor + " disconnected")).await();

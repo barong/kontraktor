@@ -40,9 +40,9 @@ public class Log extends Actor<Log> {
     public static final int WARN = 2;
     public static final int ERROR = 3;
 
-    public static Log Lg = Actors.AsActor(Log.class,100000);
+    public static Log Lg = Actors.asActor(Log.class, 100000);
 
-    public static void SetSynchronous() {
+    public static void setSynchronous() {
         if ( Lg instanceof ActorProxy) { // only do once
             Log old = Lg;
             Lg = new Log();
@@ -61,40 +61,40 @@ public class Log extends Actor<Log> {
         Lg.setSeverity(level);
         return oldSeverity;
     }
-    public static void Info( Object source, String msg ) {
+    public static void sInfo(Object source, String msg) {
         Lg.info(source, msg);
     }
-    public static void Info( Object source, Throwable ex ) {
+    public static void sInfo(Object source, Throwable ex) {
         Lg.infoLong(source, ex, null);
     }
-    public static void Debug( String msg ) {
+    public static void sDebug(String msg) {
         Lg.debug(null, msg);
     }
-    public static void Debug( Object source, String msg ) {
+    public static void sDebug(Object source, String msg) {
         Lg.debug(source,msg);
     }
-    public static void Debug( Object source, Throwable th ) {
+    public static void sDebug(Object source, Throwable th) {
         Lg.debugLong(source, th, null);
     }
-    public static void Info( Object source, Throwable t, String msg ) {
+    public static void sInfo(Object source, Throwable t, String msg) {
         Lg.infoLong(source,t,msg);
     }
-    public static void Warn( Object source, Throwable t, String msg ) {
+    public static void sWarn(Object source, Throwable t, String msg) {
         Lg.warnLong(source,t,msg);
     }
-    public static void Warn( Object source, String msg ) {
+    public static void sWarn(Object source, String msg) {
         Lg.warnLong(source,null,msg);
     }
-    public static void Warn( Object source, Throwable ex ) {
+    public static void sWarn(Object source, Throwable ex) {
         Lg.warnLong(source,ex,null);
     }
-    public static void Error(Object source, String s) {
-        Error(source,null,s);
+    public static void sError(Object source, String s) {
+        sError(source, null, s);
     }
-    public static void Error(Object source, Throwable th) {
-        Error(source,th,null);
+    public static void sError(Object source, Throwable th) {
+        sError(source, th, null);
     }
-    public static void Error(Object source, Throwable th, String s) {
+    public static void sError(Object source, Throwable th, String s) {
         Lg.error(source,th,s);
     }
 
@@ -206,6 +206,5 @@ public class Log extends Actor<Log> {
     public void msg( Thread t, int severity, Object source, Throwable ex, String msg ) {
         logger.msg( t, severity,source,ex,msg);
     }
-
 
 }

@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -65,9 +66,9 @@ public class DynamicResourceManager extends FileResourceManager {
         setPrefix(prefix);
         dependencyResolver = new DependencyResolver(resPathBase,resourcePath);
         if ( devMode )
-            Log.Warn(this, "Dependency resolving is running in *DEVELOPMENT MODE*. Turn off development mode to cache aggregated resources");
+            Log.sWarn(this, "Dependency resolving is running in *DEVELOPMENT MODE*. Turn off development mode to cache aggregated resources");
         else
-            Log.Info(this, "Dependency resolving is running in *PRODUCTION MODE*. Turn on development mode for script-refresh-on-reload and per file javascript debugging");
+            Log.sInfo(this, "Dependency resolving is running in *PRODUCTION MODE*. Turn on development mode for script-refresh-on-reload and per file javascript debugging");
     }
 
     public void setImportShim( HtmlImportShim shim ) {
@@ -143,7 +144,7 @@ public class DynamicResourceManager extends FileResourceManager {
                             }
                         }
                     } catch (Exception ex) {
-                        Log.Error(this, ex);
+                        Log.sError(this, ex);
                     }
                 }
                 try {
@@ -281,8 +282,21 @@ public class DynamicResourceManager extends FileResourceManager {
         }
 
         @Override
+        public Path getFilePath() {
+            return null;
+        }
+
+        @Override
         public File getResourceManagerRoot() {
             return null;
+        }
+
+        @Override
+        public Path getResourceManagerRootPath() {
+            final File rmr = getResourceManagerRoot();
+            if ( rmr == null )
+                return null;
+            return rmr.toPath();
         }
 
         @Override

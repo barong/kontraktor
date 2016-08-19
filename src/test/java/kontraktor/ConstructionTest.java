@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.nustaq.kontraktor.Actor;
 import org.nustaq.kontraktor.Actors;
 import org.nustaq.kontraktor.Scheduler;
-import org.nustaq.kontraktor.impl.DispatcherThread;
 import org.nustaq.kontraktor.impl.SimpleScheduler;
 
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,18 +47,18 @@ public class ConstructionTest {
     @Test
     public void creationTest() throws InterruptedException {
 
-        ConstructionSampleActor act = Actors.AsActor(ConstructionSampleActor.class);
+        ConstructionSampleActor act = Actors.asActor(ConstructionSampleActor.class);
         act.test( SimpleScheduler.DEFQSIZE, act.__scheduler );
-        ConstructionSampleActor act1 = Actors.AsActor(ConstructionSampleActor.class);
+        ConstructionSampleActor act1 = Actors.asActor(ConstructionSampleActor.class);
         act1.sameThread(act1.__currentDispatcher);
         act1.test( SimpleScheduler.DEFQSIZE, act1.__scheduler);
 
         SimpleScheduler scheduler = new SimpleScheduler(7000);
-        ConstructionSampleActor act2 = Actors.AsActor(ConstructionSampleActor.class, scheduler);
+        ConstructionSampleActor act2 = Actors.asActor(ConstructionSampleActor.class, scheduler);
         act2.notSameThread(act.__currentDispatcher);
         act2.test(8192,scheduler);
 
-        ConstructionSampleActor act4 = Actors.AsActor(ConstructionSampleActor.class, scheduler, 60000);
+        ConstructionSampleActor act4 = Actors.asActor(ConstructionSampleActor.class, scheduler, 60000);
         act4.test(65536,scheduler);
 
         Thread.sleep(200);

@@ -160,7 +160,7 @@ public class KontraktorStreams {
 
     @Test @Ignore // util to start client in separate process
     public void singleClientNoServer() throws InterruptedException {
-        Client client = Actors.AsActor(Client.class);
+        Client client = Actors.asActor(Client.class);
         client.init();
         Log.setLevel(Log.DEBUG);
 

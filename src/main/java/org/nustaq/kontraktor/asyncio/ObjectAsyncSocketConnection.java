@@ -17,7 +17,6 @@ See https://www.gnu.org/licenses/lgpl.txt
 package org.nustaq.kontraktor.asyncio;
 
 import org.nustaq.kontraktor.Actor;
-import org.nustaq.kontraktor.Actors;
 import org.nustaq.kontraktor.remoting.base.ObjectSocket;
 import org.nustaq.kontraktor.util.Log;
 import org.nustaq.offheap.BinaryQueue;
@@ -105,7 +104,7 @@ public abstract class ObjectAsyncSocketConnection extends QueuingAsyncSocketConn
                 try {
                     flush();
                 } catch (Exception e) {
-                    Log.Warn(this,e);
+                    Log.sWarn(this, e);
                 }
             });
             return;

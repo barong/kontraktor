@@ -30,7 +30,6 @@ import org.nustaq.serialization.util.FSTUtil;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -139,7 +138,7 @@ public class HttpObjectSocket extends WebObjectSocket implements ObjectSink {
         if ( myThread == null )
             myThread = Thread.currentThread();
         else if ( myThread != Thread.currentThread() ) {
-            Log.Error(this,"unexpected multithreading detected:" + myThread.getName() + " curr:" + Thread.currentThread().getName());
+            Log.sError(this, "unexpected multithreading detected:" + myThread.getName() + " curr:" + Thread.currentThread().getName());
             Thread.dumpStack();
         }
     }

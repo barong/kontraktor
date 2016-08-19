@@ -39,7 +39,7 @@ public class GeneratorTest {
 
     @Test
     public void test() {
-        Generator generator = Actors.AsActor(Generator.class);
+        Generator generator = Actors.asActor(Generator.class);
         try {
             generator.run().await(1000*1000l);
         } catch (Exception e) {

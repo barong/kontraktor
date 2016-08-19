@@ -22,7 +22,6 @@ import org.nustaq.kontraktor.Promise;
 import org.nustaq.kontraktor.util.Log;
 
 import java.util.ArrayList;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -133,7 +132,7 @@ public class RemoteRefPolling implements Runnable {
                         count++;
                     }
                 } catch (Throwable e) {
-                    Log.Info(this,e);
+                    Log.sInfo(this, e);
                     terminateEntry(i, entry, null, e);
                     i--;
                 }

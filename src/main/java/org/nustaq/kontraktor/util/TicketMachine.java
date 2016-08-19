@@ -80,7 +80,7 @@ public class TicketMachine {
 //                System.out.println("rec "+channelKey+" do remove+checknext");
                 boolean remove = finalFutures.remove(ticket);
                 if ( ! remove )
-                    System.err.println("Error failed to remove "+channelKey);
+                    System.err.println("sError failed to remove "+channelKey);
                 checkNext(channelKey, finalFutures, ticket);
             }
 

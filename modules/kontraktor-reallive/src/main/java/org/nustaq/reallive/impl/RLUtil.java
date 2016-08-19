@@ -17,37 +17,37 @@ public class RLUtil {
         return instance;
     }
 
-    public <K> AddMessage<K> add( K key, Object ... keyVals) {
+    public  AddMessage add( String key, Object ... keyVals) {
         Object record = record(key, keyVals);
-        return new AddMessage<>((Record) record);
+        return new AddMessage((Record) record);
     }
 
-    public <K> PutMessage<K> put( K key, Object ... keyVals) {
+    public  PutMessage put( String key, Object ... keyVals) {
         Object record = record(key, keyVals);
-        return new PutMessage<>((Record<K>)record);
+        return new PutMessage((Record)record);
     }
 
-    public <K> AddMessage<K> addOrUpdate( K key, Object ... keyVals) {
+    public  AddMessage addOrUpdate( String key, Object ... keyVals) {
         Object record = record(key, keyVals);
-        return new AddMessage<>(true,(Record<K>) record);
+        return new AddMessage(true,(Record) record);
     }
 
-    public <K> UpdateMessage<K> update( K key, Object ... keyVals) {
+    public  UpdateMessage update( String key, Object ... keyVals) {
         String fi[] = new String[keyVals.length/2];
         for (int i = 0; i < fi.length; i++) {
             fi[i] = (String) keyVals[i*2];
         }
         Diff d = new Diff(fi,null);
         Object record = record(key, keyVals);
-        return new UpdateMessage<>(d, (Record<K>) record);
+        return new UpdateMessage(d, (Record) record);
     }
 
-    public <K> Record<K> record( K key, Object ... keyVals) {
-        MapRecord<K> res = MapRecord.New(key);
+    public  Record record( String key, Object ... keyVals) {
+        MapRecord res = MapRecord.New(key);
         return buildRecord(res, keyVals);
     }
 
-    public <K> Record<K> buildRecord(Record<K> res, Object[] keyVals) {
+    public  Record buildRecord(Record res, Object[] keyVals) {
         for (int i = 0; i < keyVals.length; i+=2) {
             Object k = keyVals[i];
             Object v = keyVals[i+1];
@@ -56,11 +56,11 @@ public class RLUtil {
         return res;
     }
 
-    public <K> RemoveMessage<K> remove(K key) {
-        return new RemoveMessage<>(MapRecord.New(key));
+    public  RemoveMessage remove(String key) {
+        return new RemoveMessage(MapRecord.New(key));
     }
 
-    public <K> ChangeMessage<K> done() {
+    public  ChangeMessage done() {
         return new QueryDoneMessage();
     }
 

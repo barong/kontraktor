@@ -33,8 +33,8 @@ public class BufferingTest {
 
     @Test
     public void testBuf() throws InterruptedException {
-        TBuffActor tBuffActor = Actors.AsBufferedActor(TBuffActor.class);
-        TBuffActor act = Actors.AsActor(TBuffActor.class);
+        TBuffActor tBuffActor = Actors.asBufferedActor(TBuffActor.class);
+        TBuffActor act = Actors.asActor(TBuffActor.class);
 
         AtomicInteger err = new AtomicInteger();
         AtomicInteger res = new AtomicInteger();

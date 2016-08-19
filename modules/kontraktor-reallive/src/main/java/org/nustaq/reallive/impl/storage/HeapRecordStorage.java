@@ -1,41 +1,39 @@
 package org.nustaq.reallive.impl.storage;
 
-import org.nustaq.kontraktor.Spore;
 import org.nustaq.reallive.interfaces.*;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Stream;
 
 /**
  * Created by ruedi on 03/08/15.
  */
-public class HeapRecordStorage<K> implements RecordStorage<K> {
+public class HeapRecordStorage implements RecordStorage {
 
-    Map<K,Record<K>> map;
+    Map<String,Record> map;
 
     public HeapRecordStorage() {
         map = new HashMap<>();
     }
 
-    public HeapRecordStorage(Map<K,Record<K>> map) {
+    public HeapRecordStorage(Map<String,Record> map) {
         this.map = map;
     }
 
     @Override
-    public RecordStorage put(K key, Record<K> value) {
+    public RecordStorage put(String key, Record value) {
         map.put(key,value);
         return this;
     }
 
     @Override
-    public Record<K> get(K key) {
+    public Record get(String key) {
         return map.get(key);
     }
 
     @Override
-    public Record<K> remove(K key) {
+    public Record remove(String key) {
         return map.remove(key);
     }
 
@@ -44,20 +42,7 @@ public class HeapRecordStorage<K> implements RecordStorage<K> {
         return map.size();
     }
 
-
-    @Override
-    public <T> void forEach(Spore<Record<K>, T> spore) {
-        long now = System.currentTimeMillis();
-        for (Iterator<Map.Entry<K, Record<K>>> iterator = map.entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry<K, Record<K>> next = iterator.next();
-            spore.remote(next.getValue());
-            if ( spore.isFinished() )
-                break;
-        }
-        spore.finish();
-    }
-
-    public Map<K,Record<K>> getMap() {
+    public Map<String,Record> getMap() {
         return map;
     }
 
@@ -72,9 +57,8 @@ public class HeapRecordStorage<K> implements RecordStorage<K> {
     }
 
     @Override
-    public Stream<Record<K>> stream() {
+    public Stream<Record> stream() {
         return map.entrySet().stream().map( en -> en.getValue() );
     }
-
 
 }

@@ -18,7 +18,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.LockSupport;
-import java.util.function.Consumer;
 
 import static org.nustaq.kontraktor.Actors.*;
 import static org.junit.Assert.assertTrue;
@@ -71,10 +70,10 @@ public class BasicTest {
 
     @Test @Ignore // does not work as other tests muddle up num threads
     public void testStop() throws InterruptedException {
-        Log.Info(this,"pok");
+        Log.sInfo(this, "pok");
         Thread.sleep(1000);
         int count = DispatcherThread.activeDispatchers.get();
-        Bench b = AsActor(Bench.class);
+        Bench b = asActor(Bench.class);
         bench(b);
         b.stop();
         Thread.sleep(1000);
@@ -105,7 +104,7 @@ public class BasicTest {
 
     @Test
     public void callBench() {
-        Bench b = AsActor(Bench.class);
+        Bench b = asActor(Bench.class);
 
         bench(b);
         bench(b);
@@ -136,13 +135,13 @@ public class BasicTest {
 
     @Test
     public void testSelfGetActor() {
-        final BenchSub bs = AsActor(BenchSub.class);
+        final BenchSub bs = asActor(BenchSub.class);
         assertTrue(bs.getActor() != bs && bs.__self == bs);
     }
 
     @Test
     public void testInheritance() {
-        final BenchSub bs = AsActor(BenchSub.class);
+        final BenchSub bs = asActor(BenchSub.class);
         for (int i : new int[10] ) {
             bs.benchCall("u");
         }
@@ -237,10 +236,10 @@ public class BasicTest {
 
     @Test
     public void inThreadTest() throws InterruptedException {
-        ServiceActor service = AsActor(ServiceActor.class);
+        ServiceActor service = asActor(ServiceActor.class);
         service.init();
 
-        MyActor cbActor = AsActor(MyActor.class);
+        MyActor cbActor = asActor(MyActor.class);
         cbActor.init(service);
         cbActor.callbackTest();
 
@@ -269,7 +268,7 @@ public class BasicTest {
     public void testOverload() {
         try {
             // verify exception is thrown
-            Overload ov = AsActor(Overload.class);
+            Overload ov = asActor(Overload.class);
             assertTrue(false);
         } catch (Exception e) {
             // expected, cannot overload with argument types, number (too expensive)
@@ -325,7 +324,7 @@ public class BasicTest {
             act = new SleepActor[10];
             results = new IPromise[act.length];
             for (int i = 0; i < act.length; i++) {
-                act[i] = Actors.AsActor(SleepActor.class);
+                act[i] = Actors.asActor(SleepActor.class);
                 act[i].init("("+i+")");
             }
 
@@ -357,7 +356,7 @@ public class BasicTest {
     @Test
     public void testYield() {
 
-        SleepCallerActor act = Actors.AsActor(SleepCallerActor.class);
+        SleepCallerActor act = Actors.asActor(SleepCallerActor.class);
         System.out.println("now "+System.currentTimeMillis());
         act.test();
         try {
@@ -414,7 +413,7 @@ public class BasicTest {
 
     @Test
     public void testCB() throws InterruptedException {
-        FutureTest futureTest = AsActor(FutureTest.class);
+        FutureTest futureTest = asActor(FutureTest.class);
         AtomicInteger count = new AtomicInteger(0);
         futureTest.testCB( (r,e) -> {
             if ( Actors.isResult(e) ) {
@@ -432,7 +431,7 @@ public class BasicTest {
 
     @Test
     public void testUntyped() {
-        FutureTest futureTest = AsActor(FutureTest.class);
+        FutureTest futureTest = asActor(FutureTest.class);
         futureTest.tell("Hello");
         String hello1 = (String) futureTest.ask("Hello1").await();
         assertTrue( "Hello1".equals(hello1) );
@@ -445,7 +444,7 @@ public class BasicTest {
         FutureTest ft;
 
         public void init() {
-            ft = Actors.AsActor(FutureTest.class);
+            ft = Actors.asActor(FutureTest.class);
         }
 
         public IPromise<String> doTestCall() {
@@ -473,7 +472,7 @@ public class BasicTest {
 
     @Test
     public void testFuture() {
-        FutureTest ft = Actors.AsActor(FutureTest.class);
+        FutureTest ft = Actors.asActor(FutureTest.class);
         final AtomicReference<String> outerresult0 = new AtomicReference<>();
         ft.getString("oj").then(new Callback<String>() {
             @Override
@@ -483,7 +482,7 @@ public class BasicTest {
             }
         });
 
-        FutureTestCaller test = Actors.AsActor(FutureTestCaller.class);
+        FutureTestCaller test = Actors.asActor(FutureTestCaller.class);
         test.init();
 
         final AtomicReference<String> outerresult = new AtomicReference<>();
@@ -546,7 +545,7 @@ public class BasicTest {
         }
 
         public void delay() {
-            final DelayedTest test = Actors.AsActor(DelayedTest.class);
+            final DelayedTest test = Actors.asActor(DelayedTest.class);
             final long now = System.currentTimeMillis();
             delayed(100, () -> {
                 if ( Thread.currentThread() != __currentDispatcher )
@@ -559,7 +558,7 @@ public class BasicTest {
 
     @Test
     public void testDelayed() {
-        DelayedCaller caller = Actors.AsActor(DelayedCaller.class);
+        DelayedCaller caller = Actors.asActor(DelayedCaller.class);
         caller.delay();
         try {
             Thread.sleep(1000);
@@ -575,7 +574,7 @@ public class BasicTest {
     @Test
     public void testBlockingCall() {
         final AtomicInteger success = new AtomicInteger(0);
-        TestBlockingAPI actor = AsActor(TestBlockingAPI.class);
+        TestBlockingAPI actor = asActor(TestBlockingAPI.class);
         actor.get("http://www.google.com" ).then(
             (result, error) -> {
                 assertTrue( Thread.currentThread() == actor.__currentDispatcher);
@@ -615,7 +614,7 @@ public class BasicTest {
 
 
     @Test public void testBlockEx() {
-        ExceptionThrower act = Actors.AsActor(ExceptionThrower.class, 1000);
+        ExceptionThrower act = Actors.asActor(ExceptionThrower.class, 1000);
         act.test();
         try {
             Thread.sleep(2000);
@@ -655,16 +654,18 @@ public class BasicTest {
     }
 
     @Test public void testTimout() {
-        TimeOuter to = Actors.AsActor(TimeOuter.class);
+        TimeOuter to = Actors.asActor(TimeOuter.class);
         to.internalTimeout();
         to.internalTimeout1();
         to.timeOutingMethod()
           .timeoutIn(3000)
-          .onResult( r -> tocount.set(9999) )
-          .onError( err -> tocount.set(10000) )
-          .onTimeout( err -> {
-            System.out.println("outer call timed out");
-            tocount.incrementAndGet();
+          .then(r -> tocount.set(9999))
+          .then((r, err) -> tocount.set(10000))
+          .then((r, err) -> {
+              if (err instanceof Timeout) {
+                  System.out.println("outer call timed out");
+                  tocount.incrementAndGet();
+              }
           });
         try {
             Thread.sleep(6000);
@@ -682,7 +683,7 @@ public class BasicTest {
                 return new Promise<>("Result "+i);
             }
             if ( Math.random() > .5 ) {
-                return new Promise<>(null, "Error "+i);
+                return new Promise<>(null, "sError "+i);
             }
             Promise<String> res = new Promise<>();
             delayed(1, () -> res.complete("AsyncResult " + i, null) );
@@ -693,11 +694,11 @@ public class BasicTest {
         public void testMethod() {
             for ( int i = 20; i < 30; i++ ) {
                 self().returnErrorOrResult(i)
-                   .onResult((result) -> System.out.println("result 1 " + result))
-                   .onError((error) -> System.out.println("onerr 1 " + error))
-                   .onResult((result) -> System.out.println("result 2 " + result))
-                   .onError((error) -> System.out.println("onerr 2 " + error))
-                   .onResult((result) -> System.out.println("result 3 " + result))
+                   .then( result -> System.out.println("result 1 " + result))
+                   .then((r, error) -> System.out.println("onerr 1 " + error))
+                   .then( result -> System.out.println("result 2 " + result))
+                   .then((r, error) -> System.out.println("onerr 2 " + error))
+                   .then( result -> System.out.println("result 3 " + result))
                    .then((r, e) -> onFutCount.incrementAndGet());
             }
         }
@@ -707,18 +708,18 @@ public class BasicTest {
     static AtomicInteger onFutCount = new AtomicInteger(0);
 
     @Test public void testOnFutureMethods() throws InterruptedException {
-        OnFutTest oft = Actors.AsActor(OnFutTest.class);
+        OnFutTest oft = Actors.asActor(OnFutTest.class);
         oft.testMethod();
         Thread.sleep(2000);
         System.out.println("-----------------------------");
         for ( int i = 0; i < 10; i++ ) {
             oft.returnErrorOrResult(i)
-               .onResult( (result) -> System.out.println("result 1 "+result))
-               .onError(  (error)  -> System.out.println("onerr 1 "+error))
-               .onResult( (result) -> System.out.println("result 2 "+result))
-               .onError(  (error)  -> System.out.println("onerr 2 "+error))
-               .onResult( (result) -> System.out.println("result 3 " + result))
-               .then( (r,e) -> onFutCount.incrementAndGet());
+               .then( result -> System.out.println("result 1 "+result))
+               .then(  (r,error)  -> System.out.println("onerr 1 "+error))
+               .then( result -> System.out.println("result 2 "+result))
+               .then( (r,error)  -> System.out.println("onerr 2 "+error))
+               .then( result -> System.out.println("result 3 " + result))
+               .then((r, e) -> onFutCount.incrementAndGet());
         }
         Thread.sleep(2000);
         oft.stop();
@@ -737,9 +738,8 @@ public class BasicTest {
                 count.incrementAndGet();
             }
         })
-        .onTimeout(new Consumer() {
-            @Override
-            public void accept(Object o) {
+        .then( (r,o) -> {
+            if (o instanceof Timeout) {
                 count.addAndGet(8);
                 System.out.println("the EXPECTED timout");
             }
@@ -760,9 +760,8 @@ public class BasicTest {
                 count.incrementAndGet();
             }
         })
-        .onTimeout(new Consumer() {
-            @Override
-            public void accept(Object o) {
+        .then((r, o) -> {
+            if (o instanceof Timeout) {
                 count.addAndGet(8);
                 System.out.println("the EXPECTED timout");
             }

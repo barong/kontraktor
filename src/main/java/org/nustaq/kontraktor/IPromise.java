@@ -83,49 +83,6 @@ public interface IPromise<T> extends Callback<T> {
     public <OUT> IPromise<OUT> then(final Consumer<T> function);
 
     /**
-     * called if an error has been signaled by one of the futures in the previous future chain.
-     *
-     * e.e. actor.async().then( ).then( ).then( ).catchError( error -> .. );
-     */
-    public <OUT> IPromise<OUT> catchError(final Function<Object, IPromise<OUT>> function);
-
-    /**
-     * called if an error has been signaled by one of the futures in the previous future chain.
-     *
-     * e.e. actor.async().then( ).then( ).then( ).catchError( () -> .. );
-     */
-    public <OUT> IPromise<OUT> catchError(final Consumer<Object> function);
-
-    /**
-     * called when a valid result of a future becomes available.
-     * forwards to (new) "then" variant.
-     * @return
-     */
-    default public IPromise<T> onResult( Consumer<T> resultHandler ) {
-        return then(resultHandler);
-    }
-
-    /**
-     * called when an error is set as the result
-     * forwards to (new) "catchError" variant.
-     * @return
-     */
-    default public IPromise<T> onError( Consumer<Object> errorHandler ) {
-        return catchError(errorHandler);
-    }
-
-    /**
-     * called when the async call times out. see 'timeOutIn'
-     * @param timeoutHandler
-     * @return
-     */
-    IPromise<T> onTimeout(Consumer timeoutHandler);
-
-    default IPromise<T> onTimeout(Runnable timeoutHandler) {
-        return onTimeout( to -> timeoutHandler.run() );
-    }
-
-    /**
      * Warning: this is different to JDK's BLOCKING future
      * @return result if avaiable (no blocking no awaiting).
      */
@@ -187,7 +144,7 @@ public interface IPromise<T> extends Callback<T> {
     public Object getError();
 
     /**
-     * tell the future to call the onTimeout callback in N milliseconds if future is not settled until then
+     * tell the future to resolve with a TimeOut Object N milliseconds if future is not settled until then
      *
      * @param millis
      * @return this for chaining

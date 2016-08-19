@@ -50,9 +50,9 @@ public class TableSpaceSharding implements TableSpace {
             final int finalI = i;
             table.then((r, e) -> {
                 if (e == null)
-                    Log.Info(this, "table creation: "+desc.getName()+" "+ finalI);
+                    Log.sInfo(this, "table creation: "+desc.getName()+" "+ finalI);
                 else
-                    Log.Info(this, "failed table creation: " + desc.getName() + " "+ finalI + " " + e);
+                    Log.sInfo(this, "failed table creation: " + desc.getName() + " "+ finalI + " " + e);
                 p.complete(r, e);
             });
         }

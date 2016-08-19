@@ -101,42 +101,6 @@ public class Promise<T> implements IPromise<T> {
      * see IPromise (inheriting Callback) interface
      */
     @Override
-    public IPromise<T> onResult(Consumer<T> resultHandler) {
-        return then( (r,e) -> {
-            if ( e == null ) {
-                resultHandler.accept((T) r);
-            }
-        });
-    }
-
-    /**
-     * see IPromise (inheriting Callback) interface
-     */
-    @Override
-    public IPromise<T> onError(Consumer errorHandler) {
-        return then( (r,e) -> {
-            if ( e != null && e != Timeout.INSTANCE) {
-                errorHandler.accept(e);
-            }
-        });
-    }
-
-    /**
-     * see IPromise (inheriting Callback) interface
-     */
-    @Override
-    public IPromise<T> onTimeout(Consumer timeoutHandler) {
-        return then( (r,e) -> {
-            if ( e == Timeout.INSTANCE ) {
-                timeoutHandler.accept(e);
-            }
-        });
-    }
-
-    /**
-     * see IPromise (inheriting Callback) interface
-     */
-    @Override
     public <OUT> IPromise<OUT> thenAnd(final Function<T, IPromise<OUT>> function) {
         Promise res = new Promise<>();
         then( new Callback<T>() {
@@ -186,46 +150,6 @@ public class Promise<T> implements IPromise<T> {
                 } else {
                     IPromise<T> call = null;
                     call = callable.get().then(res);
-                }
-            }
-        });
-        return res;
-    }
-
-
-    /**
-     * see IPromise (inheriting Callback) interface
-     */
-    @Override
-    public <OUT> IPromise<OUT> catchError(final Function<Object, IPromise<OUT>> function) {
-        Promise res = new Promise<>();
-        then( new Callback<T>() {
-            @Override
-            public void complete(T result, Object error) {
-                if ( ! Actor.isError(error) ) {
-                    res.complete(null, error);
-                } else {
-                    function.apply(error).then(res);
-                }
-            }
-        });
-        return res;
-    }
-
-    /**
-     * see IPromise (inheriting Callback) interface
-     */
-    @Override
-    public <OUT> IPromise<OUT> catchError(Consumer<Object> function) {
-        Promise res = new Promise<>();
-        then( new Callback<T>() {
-            @Override
-            public void complete(T result, Object error) {
-                if ( ! Actor.isError(error) ) {
-                    res.complete(null, error);
-                } else {
-                    function.accept(error);
-                    res.complete();
                 }
             }
         });

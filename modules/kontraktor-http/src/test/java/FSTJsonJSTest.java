@@ -25,7 +25,7 @@ public class FSTJsonJSTest {
         File root = new File("../fast-serialization/src/main/web/");
         Http4K.get().publishFileSystem("localhost","/",8080, root);
 
-        JSActor jsa = Actors.AsActor(JSActor.class);
+        JSActor jsa = Actors.asActor(JSActor.class);
 
         new HttpPublisher(jsa,"localhost","/jsactor/",8080)
             .serType(SerializerType.JsonNoRefPretty)

@@ -37,9 +37,9 @@ public class RefChain {
     public static void main(String[] args) throws InterruptedException {
 
         // though a,b,c run inside single process use remote refs to interconnect
-        A a = Actors.AsActor(A.class);
-        B b = Actors.AsActor(B.class);
-        C c = Actors.AsActor(C.class);
+        A a = Actors.asActor(A.class);
+        B b = Actors.asActor(B.class);
+        C c = Actors.asActor(C.class);
 
         new TCPPublisher(a, 4001).publish();
         new TCPPublisher(b, 4002).publish();

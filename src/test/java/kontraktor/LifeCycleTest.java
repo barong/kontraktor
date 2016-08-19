@@ -17,7 +17,7 @@ public class LifeCycleTest {
         LCycle1 lc;
 
         public void init1() {
-            lc = Actors.AsActor(LCycle1.class);
+            lc = Actors.asActor(LCycle1.class);
         }
 
         @Override
@@ -27,7 +27,7 @@ public class LifeCycleTest {
         }
 
         public void init2() {
-            lc = Actors.AsActor(LCycle1.class,getScheduler());
+            lc = Actors.asActor(LCycle1.class, getScheduler());
         }
 
     }
@@ -38,11 +38,11 @@ public class LifeCycleTest {
 
     @Test
     public void startStop() throws InterruptedException {
-        Log.Info(this,"XX");
+        Log.sInfo(this, "XX");
         int threads = DispatcherThread.activeDispatchers.get();
         System.out.println("Active:" + threads);
 
-        LCycle lCycle = Actors.AsActor(LCycle.class);
+        LCycle lCycle = Actors.asActor(LCycle.class);
 //        lCycle.getScheduler().terminateIfIdle();
         lCycle.init1();
 
@@ -55,11 +55,11 @@ public class LifeCycleTest {
 
     @Test
     public void startStopSingleThread() throws InterruptedException {
-        Log.Info(this,"XX");
+        Log.sInfo(this, "XX");
         int threads = DispatcherThread.activeDispatchers.get();
         System.out.println("Active:" + threads);
 
-        LCycle lCycle = Actors.AsActor(LCycle.class);
+        LCycle lCycle = Actors.asActor(LCycle.class);
 //        lCycle.getScheduler().terminateIfIdle();
         lCycle.init2();
 

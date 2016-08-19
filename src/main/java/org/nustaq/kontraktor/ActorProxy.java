@@ -41,7 +41,7 @@ package org.nustaq.kontraktor;
 
 /**
  * tagging interface. 
- * Using Actors.AsActor() returns a proxy which enqueues each method call to the 'real' actor instance.
+ * Using Actors.asActor() returns a proxy which enqueues each method call to the 'real' actor instance.
  * This way one can determine wether an Object is the "real" actor or a proxy reference to it.
  * @param <T>
  */

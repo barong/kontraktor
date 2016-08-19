@@ -61,7 +61,7 @@ public class HtmlImportShim {
     public File locateResource( KUrl urlPath ) {
         File file = locator.locateResource( urlPath.toUrlString() );
         if ( file == null || ! file.exists() ) {
-            Log.Warn(this, "failed to resolve '" + urlPath + "'");
+            Log.sWarn(this, "failed to resolve '" + urlPath + "'");
         }
         return file;
     }
@@ -281,7 +281,7 @@ public class HtmlImportShim {
                             if ( visited.contains(url) ) {
                                 changes.add(() -> script.remove());
                             } else {
-                                Log.Info(this, "inlining script " + href);
+                                Log.sInfo(this, "inlining script " + href);
                                 visited.add(url);
                                 Element newScript = new Element(Tag.valueOf("script"), "" );
                                 byte[] bytes = Files.readAllBytes(impFi.toPath());

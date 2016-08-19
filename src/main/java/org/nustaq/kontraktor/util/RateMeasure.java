@@ -68,7 +68,7 @@ public class RateMeasure {
      * @param lastRatePersecond
      */
     protected void statsUpdated(long lastRatePersecond) {
-        Log.Info(this,"***** Stats for "+name+":   "+lastRatePersecond+"   per second *********");
+        Log.sInfo(this, "***** Stats for " + name + ":   " + lastRatePersecond + "   per second *********");
     }
 
 

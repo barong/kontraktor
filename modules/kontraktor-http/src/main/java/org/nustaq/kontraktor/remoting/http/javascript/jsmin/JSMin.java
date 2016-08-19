@@ -286,7 +286,7 @@ public class JSMin {
     }
 
     private void error(String s) {
-        System.err.println("JSMin Error: " + s);
+        System.err.println("JSMin sError: " + s);
         throw new JsMinException(s);
     }
 

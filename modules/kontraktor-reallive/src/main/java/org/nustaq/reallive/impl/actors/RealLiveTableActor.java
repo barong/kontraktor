@@ -11,7 +11,6 @@ import org.nustaq.reallive.impl.storage.StorageStats;
 import org.nustaq.reallive.interfaces.*;
 import org.nustaq.reallive.messages.AddMessage;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.*;
 
@@ -26,52 +25,34 @@ import java.util.function.*;
  *
  *
  */
-public class RealLiveTableActor<K> extends Actor<RealLiveTableActor<K>> implements RealLiveTable<K>, Mutatable<K> {
+public class RealLiveTableActor extends Actor<RealLiveTableActor> implements RealLiveTable {
 
     public static int MAX_QUERY_BATCH_SIZE = 10;
     public static boolean DUMP_QUERY_TIME = false;
 
-    StorageDriver<K> storageDriver;
-    FilterProcessor<K> filterProcessor;
+    StorageDriver storageDriver;
+    FilterProcessor filterProcessor;
     HashMap<String,Subscriber> receiverSideSubsMap = new HashMap();
     TableDescription description;
-    ArrayList<QueryQEntry> queuedSpores = new ArrayList();
-
-    int taCount = 0;
 
     @Local
-    public void init( Supplier<RecordStorage<K>> storeFactory, TableDescription desc) {
+    public void init( Supplier<RecordStorage> storeFactory, TableDescription desc) {
         this.description = desc;
         Thread.currentThread().setName("Table "+desc.getName()+" main");
-        RecordStorage<K> store = storeFactory.get();
-        storageDriver = new StorageDriver<>(store);
-        filterProcessor = new FilterProcessor<>(this);
+        RecordStorage store = storeFactory.get();
+        storageDriver = new StorageDriver(store);
+        filterProcessor = new FilterProcessor(this);
         storageDriver.setListener( filterProcessor );
     }
 
-
     @Override
-    public void receive(ChangeMessage<K> change) {
+    public void receive(ChangeMessage change) {
         checkThread();
         try {
             storageDriver.receive(change);
         } catch (Exception th) {
-            Log.Error(this,th);
+            Log.sError(this, th);
         }
-    }
-
-    public <T> void forEachDirect(Spore<Record<K>, T> spore) {
-        checkThread();
-        try {
-            storageDriver.getStore().forEach(spore);
-        } catch (Exception ex) {
-            spore.complete(null,ex);
-        }
-    }
-
-    @Override
-    public <T> void forEach(Spore<Record<K>, T> spore) {
-        forEachQueued(spore, () -> {});
     }
 
     @Override
@@ -84,85 +65,26 @@ public class RealLiveTableActor<K> extends Actor<RealLiveTableActor<K>> implemen
     // remote receiver then builds a unique id by concatening localid#connectionId
 
     @Override
-    @CallerSideMethod public void subscribe(Subscriber<K> subs) {
+    @CallerSideMethod public void subscribe(Subscriber subs) {
         // need callerside to transform to Callback
         Callback callback = (r, e) -> {
             if (Actors.isResult(e))
-                subs.getReceiver().receive((ChangeMessage<K>) r);
+                subs.getReceiver().receive((ChangeMessage) r);
         };
-        _subscribe(subs.getPrePatchFilter(),subs.getFilter(), callback, subs.getId());
+        _subscribe(subs.getFilter(), callback, subs.getId());
     }
 
-    public void _subscribe(RLPredicate<Record<K>> prePatchFilter, RLPredicate pred, Callback cb, int id) {
+    public void _subscribe(RLPredicate<Record> prePatchFilter, Callback cb, int id) {
         checkThread();
-        Subscriber localSubs = new Subscriber(prePatchFilter,pred, change -> {
+        Subscriber localSubs = new Subscriber(prePatchFilter, change -> {
             cb.stream(change);
         }).serverSideCB(cb);
         String sid = addChannelIdIfPresent(cb, ""+id);
         receiverSideSubsMap.put(sid,localSubs);
 
-        FilterSpore spore = new FilterSpore(localSubs.getFilter(),localSubs.getPrePatchFilter());
-        spore.onFinish( () -> localSubs.getReceiver().receive(RLUtil.get().done()) );
-        spore.setForEach((r, e) -> {
-            if (Actors.isResult(e)) {
-                localSubs.getReceiver().receive(new AddMessage((Record) r));
-            } else {
-                // FIXME: pass errors
-                // FIXME: called in case of error only (see onFinish above)
-                localSubs.getReceiver().receive(RLUtil.get().done());
-            }
-        });
-        forEachQueued(spore, () -> {
-            filterProcessor.startListening(localSubs);
-        });
-    }
-
-    static class QueryQEntry {
-        Spore spore;
-        Runnable onFin;
-
-        public QueryQEntry(Spore spore, Runnable onFin) {
-            this.spore = spore;
-            this.onFin = onFin;
-        }
-    }
-
-    void forEachQueued( Spore s, Runnable r ) {
-        queuedSpores.add(new QueryQEntry(s,r));
-        self().execQueriesOrDelay(queuedSpores.size(),taCount);
-    }
-
-    public void execQueriesOrDelay(int size, int taCount) {
-        if ( (queuedSpores.size() == size && this.taCount == taCount) || queuedSpores.size() > MAX_QUERY_BATCH_SIZE) {
-            long tim = System.currentTimeMillis();
-            Consumer<Record<K>> recordConsumer = rec -> {
-                for (int i = 0; i < queuedSpores.size(); i++) {
-                    QueryQEntry qqentry = queuedSpores.get(i);
-                    Spore spore = qqentry.spore;
-                    if (!spore.isFinished()) {
-                        try {
-                            spore.remote(rec);
-                        } catch (Throwable ex) {
-                            spore.complete(null, ex);
-                        }
-                    }
-                }
-            };
-            if ( description.isParallelFiltering() ) {
-                storageDriver.getStore().stream().parallel().forEach(recordConsumer);
-            } else {
-                storageDriver.getStore().stream().forEach(recordConsumer);
-            }
-            queuedSpores.forEach( qqentry -> {
-                qqentry.spore.finish();
-                qqentry.onFin.run();
-            });
-            if (DUMP_QUERY_TIME)
-                System.out.println("tim for "+queuedSpores.size()+" "+(System.currentTimeMillis()-tim));
-            queuedSpores.clear();
-            return;
-        }
-        execQueriesOrDelay(queuedSpores.size(),this.taCount);
+        queryAll(prePatchFilter, null, (r,e) -> cb.stream(new AddMessage((Record)r)) );
+        localSubs.getReceiver().receive(RLUtil.get().done());
+        filterProcessor.startListening(localSubs);
     }
 
     protected String addChannelIdIfPresent(Callback cb, String sid) {
@@ -176,14 +98,14 @@ public class RealLiveTableActor<K> extends Actor<RealLiveTableActor<K>> implemen
     }
 
     @CallerSideMethod @Override
-    public void unsubscribe(Subscriber<K> subs) {
+    public void unsubscribe(Subscriber subs) {
         _unsubscribe( (r,e) -> {}, subs.getId() );
     }
 
     public void _unsubscribe( Callback cb /*dummy required to find sending connection*/, int id ) {
         checkThread();
         String sid = addChannelIdIfPresent(cb, ""+id);
-        Subscriber<K> subs = (Subscriber<K>) receiverSideSubsMap.get(sid);
+        Subscriber subs = (Subscriber) receiverSideSubsMap.get(sid);
         filterProcessor.unsubscribe(subs);
         receiverSideSubsMap.remove(sid);
         cb.finish();
@@ -191,19 +113,68 @@ public class RealLiveTableActor<K> extends Actor<RealLiveTableActor<K>> implemen
     }
 
     @Override
-    public IPromise<Record<K>> get(K key) {
-        taCount++;
+    public IPromise<Record> get(String key) {
         return resolve(storageDriver.getStore().get(key));
+    }
+
+    @Override
+    public IPromise<Object> mutate(String key, RLFunction<Record, Object> action) {
+        return resolve(storageDriver.mutate(key,action));
+    }
+
+    @Override
+    public void mutateQuiet(String key, RLFunction<Record, Object> action) {
+        storageDriver.mutate(key,action);
+    }
+
+    @Override
+    public void mutateAll(RLPredicate<Record> filter, RLFunction<Record, Object> action, Callback remoteStream) {
+        storageDriver.mutateAll(filter,action,remoteStream);
+    }
+
+    @Override
+    public void queryAll(RLPredicate<Record> filter, RLFunction<Record, Object> patchingFilter, Callback remoteStream) {
+        storageDriver.queryAll(filter,patchingFilter,remoteStream);
+    }
+
+    @Override
+    public void addOrUpdate(String key, Object... keyVals) {
+        storageDriver.addOrUpdate(key,keyVals);
+    }
+
+    @Override
+    public void add(String key, Object... keyVals) {
+        storageDriver.add(key,keyVals);
+    }
+
+    @Override
+    public void add(Record rec) {
+        storageDriver.add(rec);
+    }
+
+    @Override
+    public void addOrUpdateRec(Record rec) {
+        storageDriver.addOrUpdateRec(rec);
+    }
+
+    @Override
+    public void put(Record rec) {
+        storageDriver.put(rec);
+    }
+
+    @Override
+    public void update(String key, Object... keyVals) {
+        storageDriver.update(key,keyVals);
+    }
+
+    @Override
+    public void remove(String key) {
+        storageDriver.remove(key);
     }
 
     @Override
     public IPromise<Long> size() {
         return resolve(storageDriver.getStore().size());
-    }
-
-    @Override @CallerSideMethod
-    public Mutation<K> getMutation() {
-        return new Mutator<>(self());
     }
 
     @Override
@@ -217,33 +188,9 @@ public class RealLiveTableActor<K> extends Actor<RealLiveTableActor<K>> implemen
             final StorageStats stats = storageDriver.getStore().getStats();
             return resolve(stats);
         } catch (Throwable th) {
-            Log.Warn(this,th);
+            Log.sWarn(this, th);
             return reject(th.getMessage());
         }
-    }
-
-    @Override
-    public IPromise<Boolean> putCAS(RLPredicate<Record<K>> casCondition, K key, Object[] keyVals) {
-        taCount++;
-        return storageDriver.putCAS(casCondition,key,keyVals);
-    }
-
-    @Override
-    public void atomic(K key, RLConsumer<Record<K>> action) {
-        taCount++;
-        storageDriver.atomic(key,action);
-    }
-
-    @Override
-    public IPromise atomicQuery(K key, RLFunction<Record<K>, Object> action) {
-        taCount++;
-        return storageDriver.atomicQuery(key,action);
-    }
-
-    @Override
-    public void atomicUpdate(RLPredicate<Record<K>> filter, RLFunction<Record<K>, Boolean> action) {
-        taCount++;
-        storageDriver.atomicUpdate(filter, action);
     }
 
 }

@@ -60,7 +60,7 @@ public class NioHttpServerImpl extends Actor<NioHttpServerImpl> implements NioHt
     }
 
     protected void info(String s) {
-        Log.Info(this,s);
+        Log.sInfo(this, s);
     }
 
     public void $receive() {
@@ -92,11 +92,11 @@ public class NioHttpServerImpl extends Actor<NioHttpServerImpl> implements NioHt
                         }
                     }
                 } catch (Throwable e) {
-                    Log.Warn(this,e,"");
+                    Log.sWarn(this, e, "");
                 }
             }
         } catch (Throwable e) {
-            Log.Warn(this,e,"");
+            Log.sWarn(this, e, "");
         }
         if ( ! shouldTerminate ) {
             if ( System.currentTimeMillis() - lastRequest > 100 ) {
@@ -114,7 +114,7 @@ public class NioHttpServerImpl extends Actor<NioHttpServerImpl> implements NioHt
     @Override
     public void $addHttpProcessor(RequestProcessor restProcessor) {
         if ( processor != null && restProcessor != processor)
-            Log.Warn(this, "httpprocessor already set");
+            Log.sWarn(this, "httpprocessor already set");
         processor = restProcessor;
     }
 
@@ -158,7 +158,7 @@ public class NioHttpServerImpl extends Actor<NioHttpServerImpl> implements NioHt
                                          writeClient(client, ByteBuffer.wrap(result.getBinary()));
                                      }
                                  } catch (Exception e) {
-                                     Log.Warn(this,e,"");
+                                     Log.sWarn(this, e, "");
                                  }
                              }
                              if (error != null) {
@@ -175,7 +175,7 @@ public class NioHttpServerImpl extends Actor<NioHttpServerImpl> implements NioHt
                                      key.cancel();
                                      client.close();
                                  } catch (IOException e) {
-                                     Log.Warn(this,e,"");
+                                     Log.sWarn(this, e, "");
                                  }
                              }
                         });
@@ -189,7 +189,7 @@ public class NioHttpServerImpl extends Actor<NioHttpServerImpl> implements NioHt
                     try {
                         client.close();
                     } catch (IOException e) {
-                        Log.Warn(this,e,"");
+                        Log.sWarn(this, e, "");
                     }
                 }
             }
@@ -213,7 +213,7 @@ public class NioHttpServerImpl extends Actor<NioHttpServerImpl> implements NioHt
     }
 
     public static void main( String arg[] ) throws InterruptedException {
-        NioHttpServerImpl server = Actors.AsActor(NioHttpServerImpl.class);
+        NioHttpServerImpl server = Actors.asActor(NioHttpServerImpl.class);
         server.$init(9999, new SimpleProcessor());
         server.$receive();
     }

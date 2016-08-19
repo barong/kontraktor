@@ -143,36 +143,6 @@ public class CallbackWrapper<T> implements IPromise<T>, Serializable {
             return ((IPromise)realCallback).then(result);
     }
 
-    /**
-     * Warning: this will not be called on error or timeout
-     *
-     * @param resultHandler
-     * @return
-     */
-    @Override
-    public IPromise<T> onResult(Consumer<T> resultHandler) {
-        if (realCallback instanceof IPromise == false)
-            throw new RuntimeException("this is an error.");
-        else
-            return ((IPromise)realCallback).onResult(resultHandler);
-    }
-
-    @Override
-    public IPromise<T> onError(Consumer errorHandler) {
-        if (realCallback instanceof IPromise == false)
-            throw new RuntimeException("this is an error.");
-        else
-            return ((IPromise)realCallback).onError(errorHandler);
-    }
-
-    @Override
-    public IPromise<T> onTimeout(Consumer timeoutHandler) {
-        if (realCallback instanceof IPromise == false)
-            throw new RuntimeException("this is an error.");
-        else
-            return ((IPromise)realCallback).onTimeout(timeoutHandler);
-    }
-
     @Override
     public <OUT> IPromise<OUT> thenAnd(Function<T, IPromise<OUT>> function) {
         if (realCallback instanceof IPromise == false)
@@ -187,22 +157,6 @@ public class CallbackWrapper<T> implements IPromise<T>, Serializable {
             throw new RuntimeException("this is an error.");
         else
             return ((IPromise)realCallback).then(function);
-    }
-
-    @Override
-    public <OUT> IPromise<OUT> catchError(Function<Object, IPromise<OUT>> function) {
-        if (realCallback instanceof IPromise == false)
-            throw new RuntimeException("this is an error.");
-        else
-            return ((IPromise)realCallback).catchError(function);
-    }
-
-    @Override
-    public <OUT> IPromise<OUT> catchError(Consumer<Object> function) {
-        if (realCallback instanceof IPromise == false)
-            throw new RuntimeException("this is an error.");
-        else
-            return ((IPromise)realCallback).catchError(function);
     }
 
     @Override

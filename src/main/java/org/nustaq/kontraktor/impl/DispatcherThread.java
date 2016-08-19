@@ -16,10 +16,8 @@ See https://www.gnu.org/licenses/lgpl.txt
 
 package org.nustaq.kontraktor.impl;
 
-import org.jctools.queues.MpscArrayQueue;
 import org.nustaq.kontraktor.*;
 import org.nustaq.kontraktor.monitoring.Monitorable;
-import org.nustaq.kontraktor.remoting.base.RemoteRegistry;
 import org.nustaq.kontraktor.util.Log;
 import org.nustaq.serialization.util.FSTUtil;
 
@@ -190,7 +188,7 @@ public class DispatcherThread extends Thread implements Monitorable {
                         }
                     }
                 } catch (Throwable th) {
-                    Log.Warn(this, th, "from main poll loop");
+                    Log.sWarn(this, th, "from main poll loop");
                 }
             }
             scheduler.threadStopped(this);
@@ -201,7 +199,7 @@ public class DispatcherThread extends Thread implements Monitorable {
                 scheduler.tryStopThread(this);
             }
             if ( SimpleScheduler.DEBUG_SCHEDULING)
-                Log.Debug(this,"dispatcher thread terminated "+getName());
+                Log.sDebug(this, "dispatcher thread terminated " + getName());
         } finally {
             activeDispatchers.decrementAndGet();
         }
@@ -336,25 +334,25 @@ public class DispatcherThread extends Thread implements Monitorable {
 //                    if (callEntry.getFutureCB() != null)
 //                        callEntry.getFutureCB().complete(null, e);
 //                    else
-//                        Log.Warn(this,e,"");
+//                        Log.sWarn(this,e,"");
 //                    if (callEntry.getFutureCB() != null)
 //                        callEntry.getFutureCB().complete(null, e);
 //                    else
-//                        Log.Warn(this,e,"");
+//                        Log.sWarn(this,e,"");
                     return true;
                 }
                 if ( e instanceof InvocationTargetException ) {
                     e = e.getCause();
                 }
                 if (callEntry.getFutureCB() != null) {
-                    Log.Warn(this, e, "unhandled exception in message: '"+callEntry+"'.returned catched exception to future " + e + " set DispatcherThread.DUMP_CATCHED to true in order to dump stack.");
+                    Log.sWarn(this, e, "unhandled exception in message: '" + callEntry + "'.returned catched exception to future " + e + " set DispatcherThread.DUMP_CATCHED to true in order to dump stack.");
                     if ( DUMP_CATCHED ) {
                         e.printStackTrace();
                     }
                     callEntry.getFutureCB().complete(null, e);
                 }
                 else
-                    Log.Warn(this,e,"");
+                    Log.sWarn(this, e, "");
             }
         }
         return false;

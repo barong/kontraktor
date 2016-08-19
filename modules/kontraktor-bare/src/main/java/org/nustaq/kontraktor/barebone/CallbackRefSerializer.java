@@ -52,7 +52,7 @@ public class CallbackRefSerializer extends FSTBasicObjectSerializer {
 //            try {
 //                reg.receiveCBResult(chan.get(),id,result,error);
 //            } catch (Exception e) {
-//                Log.Warn(this, e, "");
+//                Log.sWarn(this, e, "");
 //            }
 //        };
 //        in.registerObject(cb, streamPositioin, serializationInfo, referencee);

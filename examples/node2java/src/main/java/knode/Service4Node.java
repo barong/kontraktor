@@ -69,7 +69,7 @@ public class Service4Node extends Actor<Service4Node> {
     public static void main(String[] args) {
         Log.setLevel( Log.DEBUG ); // ensure we see also IO/close exceptions
 
-        Service4Node service = Actors.AsActor(Service4Node.class);
+        Service4Node service = Actors.asActor(Service4Node.class);
         new WebSocketPublisher(service,"localhost","/s4n",8080)
             //.serType(SerializerType.JsonNoRef) gets replaced by this below
             .coding(new Coding(SerializerType.JsonNoRef, Pojo2Node.class))

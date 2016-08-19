@@ -56,7 +56,7 @@ import java.util.function.Consumer;
 
 /**
  * Baseclass for actor/eventloop implementations. Note that actors are not created using constructors.
- * Use Actors.AsActor(..) to instantiate an actor instance.
+ * Use Actors.asActor(..) to instantiate an actor instance.
  *
  * Example (public methods are automatically transformed to be async):
  * <pre>
@@ -72,7 +72,7 @@ import java.util.function.Consumer;
  *     protected String syncMethod() { .. }
  * }
  *
- * MyActor act = Actors.AsActor(MyActor.class);
+ * MyActor act = Actors.asActor(MyActor.class);
  * act.init().then( () -> { System.out.println("done"); }
  * Object res = act.asyncMessage("Hello").await();
  *
@@ -298,7 +298,7 @@ public class Actor<SELF extends Actor> extends Actors implements Serializable, M
     }
 
     /**
-     * Debug method.
+     * sDebug method.
      * can be called to check actor code is actually single threaded.
      * By using custom callbacks/other threading bugs accidental multi threading
      * can be detected that way.
@@ -306,10 +306,10 @@ public class Actor<SELF extends Actor> extends Actors implements Serializable, M
      */
     protected final void checkThread() {
         if (getCurrentDispatcher() != null && getCurrentDispatcher() != Thread.currentThread()) {
-            Log.Error(this,"UNEXPECTED MULTITHREADING");
+            Log.sError(this, "UNEXPECTED MULTITHREADING");
             throw new RuntimeException("Wrong Thread");
         } else if ( getCurrentDispatcher() == null ){
-            Log.Error(this,"Not in Dispatcher Thread");
+            Log.sError(this, "Not in Dispatcher Thread");
             throw new RuntimeException("Not in Dispatcher Thread:"+Thread.currentThread().getName());
         }
     }
@@ -401,11 +401,11 @@ public class Actor<SELF extends Actor> extends Actors implements Serializable, M
         if ( __ticketMachine == null ) {
             __ticketMachine = new TicketMachine();
         }
-        __ticketMachine.getTicket(transactionKey).onResult(finSig -> {
+        __ticketMachine.getTicket(transactionKey).then(finSig -> {
             try {
                 toRun.accept(finSig);
             } catch (Throwable th) {
-                Log.Warn(Actor.this,th);
+                Log.sWarn(Actor.this, th);
             }
         });
     }
@@ -514,7 +514,7 @@ public class Actor<SELF extends Actor> extends Actors implements Serializable, M
 
     // set to stopped and inform all stop listeners
     @CallerSideMethod protected void __stopImpl() {
-        Log.Debug(this,"stopping actor "+getClass().getSimpleName());
+        Log.sDebug(this, "stopping actor " + getClass().getSimpleName());
         Actor self = __self;
         if ( self == null || getActor() == null || (self.isStopped() && getActor().isStopped()) )
             return;
@@ -554,7 +554,7 @@ public class Actor<SELF extends Actor> extends Actors implements Serializable, M
         String senderString = sender.get() == null ? "null" : sender.get().getClass().getName();
         String s = "DEAD LETTER: sender:" + senderString + " receiver::msg:" + receiver.getClass().getSimpleName() + "::" + methodName;
         s = s.replace("_ActorProxy","");
-        Actors.AddDeadLetter(s);
+        Actors.addDeadLetter(s);
     }
 
     // FIXME: would be much better to do lookup at method invoke time INSIDE actor thread instead of doing it on callside (contended)

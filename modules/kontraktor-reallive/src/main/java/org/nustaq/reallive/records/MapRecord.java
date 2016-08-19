@@ -13,12 +13,12 @@ import java.util.function.Function;
  * a record stored by reallive.
  *
  */
-public class MapRecord<K> implements Record<K> {
+public class MapRecord implements Record {
 
     public static Class<? extends MapRecord> recordClass = MapRecord.class;
     public static Function<MapRecord,MapRecord> conversion;
 
-    public static <K> MapRecord<K> New() {
+    public static  MapRecord New() {
         try {
             return recordClass.newInstance();
         } catch (InstantiationException e) {
@@ -32,18 +32,18 @@ public class MapRecord<K> implements Record<K> {
     protected Map<String,Object> map = new HashMap<>();
 
     protected String fields[];
-    protected K key;
+    protected String key;
 
     protected MapRecord() {
     }
 
-    public static <K> MapRecord<K> New(K key) {
+    public static  MapRecord New(String key) {
         MapRecord mapRecord = New();
         mapRecord.key = key;
         return mapRecord;
     }
 
-    public static <K> MapRecord<K> New(K key, Object ... values) {
+    public static  MapRecord New(String key, Object ... values) {
         MapRecord mapRecord = New();
         RLUtil.get().buildRecord(mapRecord,values);
         return mapRecord;
@@ -54,12 +54,12 @@ public class MapRecord<K> implements Record<K> {
     }
 
     @Override
-    public K getKey() {
+    public String getKey() {
         return key;
     }
 
 //    @Override
-    public void key(K key) {
+    public void key(String key) {
         this.key = key;
     }
 
@@ -96,8 +96,8 @@ public class MapRecord<K> implements Record<K> {
     /**
      * @return a shallow copy
      */
-    public MapRecord<K> copied() {
-        MapRecord<K> newReq = MapRecord.New(getKey());
+    public MapRecord copied() {
+        MapRecord newReq = MapRecord.New(getKey());
         map.forEach( (k,v) -> newReq.put(k,v) );
         return newReq;
     }

@@ -23,8 +23,6 @@ import org.nustaq.kontraktor.util.PromiseLatch;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.LockSupport;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -135,7 +133,7 @@ public class Actors {
     /**
      * utility function. Executed in foreign thread. Use Actor::delayed() to have the runnable executed inside actor thread
      */
-    public static void SubmitDelayed( long millis, Runnable task ) {
+    public static void submitDelayed(long millis, Runnable task) {
         Actors.delayedCalls.schedule( new TimerTask() {
             @Override
             public void run() {
@@ -144,9 +142,9 @@ public class Actors {
         },millis);
     }
 
-    public static void AddDeadLetter(String s) {
+    public static void addDeadLetter(String s) {
         Log.Lg.warn(null,s);
-        DeadLetters().add(s);
+        deadLetters().add(s);
     }
 
     /**
@@ -160,7 +158,7 @@ public class Actors {
      * @param <T>
      * @return
      */
-    public static <T> T InThread( T anInterface ) {
+    public static <T> T inThread(T anInterface) {
         Actor sender = Actor.sender.get();
         if ( sender != null )
             return sender.getScheduler().inThread(sender.getActor(),anInterface);
@@ -173,7 +171,7 @@ public class Actors {
      *
      * @return queue of dead letters. Note: only strings are recorded to avoid accidental references.
      */
-    public static Queue<String> DeadLetters() {
+    public static Queue<String> deadLetters() {
         return instance.getDeadLetters();
     }
 
@@ -185,7 +183,7 @@ public class Actors {
      * @param <T>
      * @return
      */
-    public static <T extends Actor> T AsActor(Class<T> actorClazz) {
+    public static <T extends Actor> T asActor(Class<T> actorClazz) {
         return (T) instance.newProxy(actorClazz, defaultScheduler.get(), -1);
     }
 
@@ -207,7 +205,7 @@ public class Actors {
      * @param <T>
      * @return
      */
-    public static <T extends Actor> T AsBufferedActor(Class<T> actorClazz) {
+    public static <T extends Actor> T asBufferedActor(Class<T> actorClazz) {
         return (T) instance.newProxy(actorClazz, new RemoteScheduler(SimpleScheduler.DEFQSIZE), -1);
     }
 
@@ -219,7 +217,7 @@ public class Actors {
      * @param <T>
      * @return
      */
-    public static <T extends Actor> T AsActor(Class<T> actorClazz, int qSize) {
+    public static <T extends Actor> T asActor(Class<T> actorClazz, int qSize) {
         return (T) instance.newProxy(actorClazz, defaultScheduler.get(), qSize);
     }
 
@@ -230,7 +228,7 @@ public class Actors {
      * @param <T>
      * @return
      */
-    public static <T extends Actor> T AsActor(Class<T> actorClazz, Scheduler scheduler) {
+    public static <T extends Actor> T asActor(Class<T> actorClazz, Scheduler scheduler) {
         return (T) instance.newProxy(actorClazz,scheduler,-1);
     }
 
@@ -241,7 +239,7 @@ public class Actors {
      * @param <T>
      * @return
      */
-    public static <T extends Actor> T AsActor(Class<T> actorClazz, Scheduler scheduler, int qsize) {
+    public static <T extends Actor> T asActor(Class<T> actorClazz, Scheduler scheduler, int qsize) {
         return (T) instance.newProxy(actorClazz,scheduler,qsize);
     }
 

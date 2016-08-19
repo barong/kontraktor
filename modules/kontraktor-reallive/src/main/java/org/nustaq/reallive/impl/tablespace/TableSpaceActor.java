@@ -51,7 +51,7 @@ public class TableSpaceActor extends Actor<TableSpaceActor> implements TableSpac
         if ( tables.containsKey( desc.getName()) ) {
             return resolve(tables.get(desc.getName()));
         }
-        RealLiveTableActor table = Actors.AsActor(RealLiveTableActor.class);
+        RealLiveTableActor table = Actors.asActor(RealLiveTableActor.class);
 
         Supplier<RecordStorage> memFactory;
         if ( desc.getFilePath() == null ) {
@@ -59,14 +59,14 @@ public class TableSpaceActor extends Actor<TableSpaceActor> implements TableSpac
                 case CACHED:
                     memFactory = () -> new CachedOffHeapStorage(
                         new OffHeapRecordStorage( desc.getKeyLen(), desc.getSizeMB(), desc.getNumEntries() ),
-                        new HeapRecordStorage<>() );
+                        new HeapRecordStorage() );
                 break;
                 default:
                 case PERSIST:
                     memFactory = () -> new OffHeapRecordStorage( desc.getKeyLen(), desc.getSizeMB(), desc.getNumEntries() );
                 break;
                 case TEMP:
-                    memFactory = () -> new HeapRecordStorage<>();
+                    memFactory = () -> new HeapRecordStorage();
                 break;
             }
         } else {
@@ -82,7 +82,7 @@ public class TableSpaceActor extends Actor<TableSpaceActor> implements TableSpac
                             desc.getSizeMB(),
                             desc.getNumEntries()
                         ),
-                        new HeapRecordStorage<>()
+                        new HeapRecordStorage()
                     );
                 break;
                 default:
@@ -96,7 +96,7 @@ public class TableSpaceActor extends Actor<TableSpaceActor> implements TableSpac
                         );
                 break;
                 case TEMP:
-                    memFactory = () -> new HeapRecordStorage<>();
+                    memFactory = () -> new HeapRecordStorage();
                 break;
             }
         }

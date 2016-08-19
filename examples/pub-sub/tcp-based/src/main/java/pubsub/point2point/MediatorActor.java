@@ -88,7 +88,7 @@ public class MediatorActor extends Actor<MediatorActor> {
                 all((List) results).await(5000); // is non-blocking
             } catch (Exception ex) {
                 // timeout goes here
-                Log.Info(this, "timeout in broadcast");
+                Log.sInfo(this, "timeout in broadcast");
             }
             results.forEach( promise -> cb.stream(promise.get()));
             cb.finish(); // important to release callback mapping in remoting !
@@ -96,12 +96,12 @@ public class MediatorActor extends Actor<MediatorActor> {
     }
 
     public static void main(String[] args) {
-        MediatorActor mediator = Actors.AsActor(MediatorActor.class);
+        MediatorActor mediator = Actors.asActor(MediatorActor.class);
         mediator.init();
         new WebSocketPublisher(mediator, "localhost", "/", 9090 )
             .serType(SerializerType.FSTSer)
             .publish((disconnectedActor) -> {
-                Log.Info(null, "connection lost " + disconnectedActor);
+                Log.sInfo(null, "connection lost " + disconnectedActor);
                 mediator.unsubscribeAll((ReceiverActor) disconnectedActor);
             });
     }

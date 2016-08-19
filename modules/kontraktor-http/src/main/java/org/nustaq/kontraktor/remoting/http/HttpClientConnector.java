@@ -74,7 +74,7 @@ public class HttpClientConnector implements ActorClientConnector {
     }
 
     String sessionId;
-    FSTConfiguration authConf = FSTConfiguration.createJsonConfiguration();
+    FSTConfiguration authConf = FSTConfiguration.createJsonNoRefConfiguration();
     volatile boolean isClosed = false;
     Promise closedNotification;
     Callback<ActorClientConnector> disconnectCallback;
@@ -135,7 +135,7 @@ public class HttpClientConnector implements ActorClientConnector {
                             res.resolve();
                         });
                     } catch (Exception e) {
-                        Log.Warn(this, e);
+                        Log.sWarn(this, e);
                         res.reject(e);
                     }
                 } else {
@@ -214,7 +214,7 @@ public class HttpClientConnector implements ActorClientConnector {
         isClosed = true;
         if (disconnectCallback!=null)
             disconnectCallback.complete(this,null);
-        Log.Info(this,"connection closing");
+        Log.sInfo(this, "connection closing");
         return closedNotification;
     }
 
@@ -291,7 +291,7 @@ public class HttpClientConnector implements ActorClientConnector {
 
                 @Override
                 public void cancelled() {
-                    Log.Warn(this, "request cancelled");
+                    Log.sWarn(this, "request cancelled");
                     openRequests.decrementAndGet();
                 }
             });
@@ -403,7 +403,7 @@ public class HttpClientConnector implements ActorClientConnector {
                             sink.receiveObject(o, null);
                         }
                         else {
-//                            Log.Warn(this, "IGNORED LP RESPONSE, OUT OF SEQ");
+//                            Log.sWarn(this, "IGNORED LP RESPONSE, OUT OF SEQ");
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -485,11 +485,11 @@ public class HttpClientConnector implements ActorClientConnector {
     /**
      * helper actor receive side
      */
-    static HttpClientActor singletonRec = Actors.AsActor(HttpClientActor.class);
+    static HttpClientActor singletonRec = Actors.asActor(HttpClientActor.class);
     public static HttpClientActor getReceiveActor() {
         synchronized (HttpClientConnector.class) {
             if (singletonRec == null )
-                singletonRec = Actors.AsActor(HttpClientActor.class);
+                singletonRec = Actors.asActor(HttpClientActor.class);
             return singletonRec;
         }
     }
@@ -497,11 +497,11 @@ public class HttpClientConnector implements ActorClientConnector {
     /**
      * helper actor send side
      */
-    static HttpClientActor singletonRefPoll = Actors.AsActor(HttpClientActor.class);
+    static HttpClientActor singletonRefPoll = Actors.asActor(HttpClientActor.class);
     public static HttpClientActor getRefPollActor() {
         synchronized (HttpClientConnector.class) {
             if (singletonRefPoll == null ) {
-                singletonRefPoll = Actors.AsActor(HttpClientActor.class);
+                singletonRefPoll = Actors.asActor(HttpClientActor.class);
                 singletonRefPoll.init();
             }
             return singletonRefPoll;

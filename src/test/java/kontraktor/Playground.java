@@ -3,8 +3,6 @@ package kontraktor;
 import org.nustaq.kontraktor.*;
 import org.nustaq.kontraktor.Promise;
 
-import java.util.HashMap;
-
 /**
  * Created by moelrue on 05.05.2014.
  */
@@ -83,42 +81,10 @@ public class Playground {
         System.out.println("tim "+(numCalls/(System.currentTimeMillis()-tim))*1000+" calls per sec");
     }
 
-    public static class TestSpore {
-        int x = 100;
-        int y = 111;
-        String s = "pok";
-
-        public Spore<Integer,String> getSpore(int z) {
-            return new Spore<Integer,String>() {
-                // declare
-                int sx,sy,sz;
-                HashMap map;
-
-                {
-                    // capture
-                    sx = x; sy = y; sz = z;
-                    map = new HashMap();
-                }
-
-                @Override
-                public void remote(Integer input) {
-                    System.out.println("executed later " + sx + " " + sy + " " + sz);
-                }
-
-            }.setForEach((r, e) -> System.out.println("POK " + r));
-        }
-    }
-
-    public static void main( String arg[] ) throws Exception {
-        TestSpore t = new TestSpore();
-        Spore c = t.getSpore(77);
-        System.out.println("pok");
-    }
-
     public static void main_( String arg[] ) throws InterruptedException {
 
-        SampleActor actorA = Actors.AsActor(SampleActor.class);
-        final SampleActor actorB = Actors.AsActor(SampleActor.class);
+        SampleActor actorA = Actors.asActor(SampleActor.class);
+        final SampleActor actorB = Actors.asActor(SampleActor.class);
         actorA.setOther(actorB);
         for ( int i : new int[10] ) {
             bench(actorA);

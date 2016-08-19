@@ -134,7 +134,7 @@ public class KxPublisherActor<IN, OUT> extends Actor<KxPublisherActor<IN, OUT>> 
                 subscriber.onNext((OUT) res);
             }
         }).then(subs -> {
-            Log.Info(this, "stream subscribe acknowledged");
+            Log.sInfo(this, "stream subscribe acknowledged");
             subscriber.onSubscribe(subs);
         });
     }
@@ -166,7 +166,7 @@ public class KxPublisherActor<IN, OUT> extends Actor<KxPublisherActor<IN, OUT>> 
             if ( se != null ) {// ignore unknown subscribers
                 se.addCredits(l);
             } else {
-                Log.Warn(this, "ignored credits " + l + " on id " + id);
+                Log.sWarn(this, "ignored credits " + l + " on id " + id);
             }
             emitRequestNext();
         }
@@ -324,7 +324,7 @@ public class KxPublisherActor<IN, OUT> extends Actor<KxPublisherActor<IN, OUT>> 
                 emitRequestNext();
             } else {
                 if ( openRequested > 0 || pending.size() > 0 ) {
-                    Log.Info(this, "no subscribers, deleting "+pending.size()+" messages");
+                    Log.sInfo(this, "no subscribers, deleting " + pending.size() + " messages");
                     pending.clear();
                 }
                 openRequested = 0;
@@ -438,7 +438,7 @@ public class KxPublisherActor<IN, OUT> extends Actor<KxPublisherActor<IN, OUT>> 
     }
 
     public void subscriberDisconnected(int id) {
-        Log.Info(this, "a stream client disconnected id:" + id + " remaining:" + subscribers.size());
+        Log.sInfo(this, "a stream client disconnected id:" + id + " remaining:" + subscribers.size());
         emitRequestNext();
     }
 

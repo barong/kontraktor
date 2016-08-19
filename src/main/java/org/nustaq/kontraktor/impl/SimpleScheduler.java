@@ -26,7 +26,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.*;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by ruedi on 02/04/15.
@@ -128,7 +127,7 @@ public class SimpleScheduler implements Scheduler {
                             sender = ", sender:" + sendingActor.getActor().getClass().getSimpleName();
                         Log.Lg.warn(this, "Warning: Thread " + Thread.currentThread().getName() + " blocked more than "+BLOCKED_MS_TIL_WARN+"ms trying to put message on " + receiverString + sender + " msg:" + o);
                         if ( sendingActor != null && sendingActor.__throwExAtBlock ) {
-                            Log.Warn(this,"throwing ActorBlockedException to "+sendingActor.getClass().getName()+" qsiz:"+sendingActor.getMailboxSize()+"/"+sendingActor.getCallbackSize());
+                            Log.sWarn(this, "throwing ActorBlockedException to " + sendingActor.getClass().getName() + " qsiz:" + sendingActor.getMailboxSize() + "/" + sendingActor.getCallbackSize());
                             throw ActorBlockedException.Instance;
                         }
                     }

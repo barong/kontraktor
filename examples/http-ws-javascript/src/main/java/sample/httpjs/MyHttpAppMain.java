@@ -1,5 +1,6 @@
 package sample.httpjs;
 
+import org.nustaq.kontraktor.Actors;
 import org.nustaq.kontraktor.remoting.encoding.SerializerType;
 import org.nustaq.kontraktor.remoting.http.Http4K;
 import org.nustaq.kontraktor.remoting.http.HttpPublisher;
@@ -31,7 +32,7 @@ public class MyHttpAppMain {
         File jsroot = new File(root.getCanonicalPath() + "/../../../modules/kontraktor-http/src/main/javascript/js4k").getCanonicalFile();
 
         // create server actor
-        MyHttpApp myHttpApp = AsActor(MyHttpApp.class);
+        MyHttpApp myHttpApp = Actors.asActor(MyHttpApp.class);
         myHttpApp.init();
 
         Http4K.Build("localhost", 8080)

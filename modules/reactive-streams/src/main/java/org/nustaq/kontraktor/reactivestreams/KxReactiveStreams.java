@@ -285,7 +285,7 @@ public class KxReactiveStreams extends Actors {
      */
     public <T> IPromise<KxPublisher<T>> connect(Class<T> eventType, ConnectableActor connectable, Callback<ActorClientConnector> disconHandler) {
         Callback<ActorClientConnector> discon = (acc,err) -> {
-            Log.Info(this, "Client disconnected");
+            Log.sInfo(this, "Client disconnected");
             acc.closeClient();
             if ( disconHandler != null ) {
                 disconHandler.complete(acc,err);

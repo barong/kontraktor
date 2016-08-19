@@ -88,7 +88,7 @@ public class UndertowWebsocketServerConnector implements ActorServerConnector {
 
                        @Override
                        protected void onError(WebSocketChannel channel, Throwable error) {
-                           Log.Debug(this,error);
+                           Log.sDebug(this, error);
                            sink.sinkClosed();
                        }
 

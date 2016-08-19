@@ -107,11 +107,11 @@ public class TCPServerConnector implements ActorServerConnector {
                                     sink.receiveObject(o, null);
                                 } catch (Exception e) {
                                     if (e instanceof EOFException == false && e instanceof SocketException == false)
-                                        Log.Warn(this, e);
+                                        Log.sWarn(this, e);
                                     try {
                                         clientSocket.close();
                                     } catch (IOException e1) {
-                                        Log.Warn(this, e1);
+                                        Log.sWarn(this, e1);
                                     }
                                 }
                             }
@@ -124,7 +124,7 @@ public class TCPServerConnector implements ActorServerConnector {
                 });
             }
         } catch (Exception e) {
-            Log.Info(this, e.getMessage() );
+            Log.sInfo(this, e.getMessage());
             if ( ! p.isSettled() )
                 p.reject(e);
         } finally {
@@ -133,7 +133,7 @@ public class TCPServerConnector implements ActorServerConnector {
             try {
                 acceptSocket.close();
             } catch (IOException e) {
-                Log.Warn(this,e);
+                Log.sWarn(this, e);
             }
             numberOfThreads.decrementAndGet();
         }
@@ -146,11 +146,11 @@ public class TCPServerConnector implements ActorServerConnector {
             clientSockets.forEach( socket -> {
                 // need to give time for flush. No way to determine wether buffers are out =>
                 // risk of premature close + message loss
-                Actors.SubmitDelayed(DELAY_MS_TILL_CLOSE, () -> {
+                Actors.submitDelayed(DELAY_MS_TILL_CLOSE, () -> {
                     try {
                         socket.close();
                     } catch (IOException e) {
-                        Log.Warn(this, e);
+                        Log.sWarn(this, e);
                     }
                 });
             });

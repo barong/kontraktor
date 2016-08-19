@@ -38,7 +38,7 @@ public class TCPPublisher extends TCPNIOPublisher {
 
     public TCPPublisher(Actor facade, int port) {
         super(facade, port);
-        Log.Warn(this,"TCPPublisher uses blocking io, its strongly recommended to use TCPNIOPublisher instead.");
+        Log.sWarn(this, "TCPPublisher uses blocking io, its strongly recommended to use TCPNIOPublisher instead.");
     }
 
     @Override

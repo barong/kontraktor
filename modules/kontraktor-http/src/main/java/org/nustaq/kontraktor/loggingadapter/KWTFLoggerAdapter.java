@@ -44,27 +44,27 @@ public class KWTFLoggerAdapter implements Logger {
 
     @Override
     public void trace(String s) {
-        Log.Debug(s);
+        Log.sDebug(s);
     }
 
     @Override
     public void trace(String s, Object o) {
-        Log.Debug(s+" "+o);
+        Log.sDebug(s + " " + o);
     }
 
     @Override
     public void trace(String s, Object o, Object o1) {
-        Log.Debug(s+" "+o+" "+o1); // wtf
+        Log.sDebug(s + " " + o + " " + o1); // wtf
     }
 
     @Override
     public void trace(String s, Object... objects) {
-        Log.Debug(s+" "+ Arrays.toString(objects)); // wtf
+        Log.sDebug(s + " " + Arrays.toString(objects)); // wtf
     }
 
     @Override
     public void trace(String s, Throwable throwable) {
-        Log.Info(s, throwable);
+        Log.sInfo(s, throwable);
     }
 
     @Override
@@ -108,31 +108,31 @@ public class KWTFLoggerAdapter implements Logger {
     @Override
     public void debug(String s) {
         if ( ForwardDebug )
-            Log.Debug(name, s);
+            Log.sDebug(name, s);
     }
 
     @Override
     public void debug(String s, Object o) {
         if ( ForwardDebug )
-            Log.Debug(name, s+" "+o);
+            Log.sDebug(name, s + " " + o);
     }
 
     @Override
     public void debug(String s, Object o, Object o1) {
         if ( ForwardDebug )
-            Log.Debug(name, s+" "+o+" "+o1);
+            Log.sDebug(name, s + " " + o + " " + o1);
     }
 
     @Override
     public void debug(String s, Object... objects) {
         if ( ForwardDebug )
-            Log.Debug(name, s+" "+Arrays.toString(objects));
+            Log.sDebug(name, s + " " + Arrays.toString(objects));
     }
 
     @Override
     public void debug(String s, Throwable throwable) {
         if ( ForwardDebug )
-            Log.Info(name,throwable,s);
+            Log.sInfo(name, throwable, s);
     }
 
     @Override
@@ -172,27 +172,27 @@ public class KWTFLoggerAdapter implements Logger {
 
     @Override
     public void info(String s) {
-        Log.Info(name,s);
+        Log.sInfo(name, s);
     }
 
     @Override
     public void info(String s, Object o) {
-        Log.Info(name,s+" "+o);
+        Log.sInfo(name, s + " " + o);
     }
 
     @Override
     public void info(String s, Object o, Object o1) {
-        Log.Info(name,s+" "+o+", "+o1);
+        Log.sInfo(name, s + " " + o + ", " + o1);
     }
 
     @Override
     public void info(String s, Object... objects) {
-        Log.Info(name,s+" "+Arrays.toString(objects));
+        Log.sInfo(name, s + " " + Arrays.toString(objects));
     }
 
     @Override
     public void info(String s, Throwable throwable) {
-        Log.Info(name, throwable, s);
+        Log.sInfo(name, throwable, s);
     }
 
     @Override
@@ -232,27 +232,27 @@ public class KWTFLoggerAdapter implements Logger {
 
     @Override
     public void warn(String s) {
-        Log.Warn(name,s);
+        Log.sWarn(name, s);
     }
 
     @Override
     public void warn(String s, Object o) {
-        Log.Warn(name,s+" "+o);
+        Log.sWarn(name, s + " " + o);
     }
 
     @Override
     public void warn(String s, Object... objects) {
-        Log.Warn(name,s+" "+Arrays.toString(objects));
+        Log.sWarn(name, s + " " + Arrays.toString(objects));
     }
 
     @Override
     public void warn(String s, Object o, Object o1) {
-        Log.Warn(name,s+" "+o+", "+o1);
+        Log.sWarn(name, s + " " + o + ", " + o1);
     }
 
     @Override
     public void warn(String s, Throwable throwable) {
-        Log.Warn(name, throwable, s );
+        Log.sWarn(name, throwable, s);
     }
 
     @Override
@@ -292,27 +292,27 @@ public class KWTFLoggerAdapter implements Logger {
 
     @Override
     public void error(String s) {
-        Log.Error( name, s );
+        Log.sError(name, s);
     }
 
     @Override
     public void error(String s, Object o) {
-        Log.Error( name, s +" "+o );
+        Log.sError(name, s + " " + o);
     }
 
     @Override
     public void error(String s, Object o, Object o1) {
-        Log.Error( name, s +" "+o+", "+o1 );
+        Log.sError(name, s + " " + o + ", " + o1);
     }
 
     @Override
     public void error(String s, Object... objects) {
-        Log.Error( name, s +" "+Arrays.toString(objects) );
+        Log.sError(name, s + " " + Arrays.toString(objects));
     }
 
     @Override
     public void error(String s, Throwable throwable) {
-        Log.Error( name, throwable, s );
+        Log.sError(name, throwable, s);
     }
 
     @Override

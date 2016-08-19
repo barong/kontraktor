@@ -53,14 +53,6 @@ public class RemotingTest {
             cb.finish();
         }
 
-        public void spore( Spore<Integer,Integer> spore ) {
-            spore.remote(1);
-            spore.remote(2);
-            spore.remote(3);
-            spore.remote(4);
-            spore.finish();
-        }
-
         RateMeasure measure = new RateMeasure("calls",1000);
         public void benchMarkVoid(int someVal) {
             measure.count();
@@ -94,7 +86,7 @@ public class RemotingTest {
     @Test @Ignore
     public void testWSJSR() throws Exception {
         checkSequenceErrors = true;
-        RemotingTestService service = Actors.AsActor(RemotingTestService.class, Q_SIZE);
+        RemotingTestService service = Actors.asActor(RemotingTestService.class, Q_SIZE);
         ActorServer publisher = _JSR356ServerConnector.Publish(service, "ws://localhost:8081/ws", null).await();
         RemotingTestService client = (RemotingTestService)
             new WebSocketConnectable(RemotingTestService.class, "ws://localhost:8081/ws")
@@ -116,13 +108,13 @@ public class RemotingTest {
 
     @Test
     public void testHttpJson() throws Exception {
-        Coding coding = new Coding(SerializerType.Json);
+        Coding coding = new Coding(SerializerType.JsonNoRef);
         runtHttp(coding);
     }
 
     public void runtHttp(Coding coding) throws InterruptedException {
         checkSequenceErrors = true;
-        RemotingTestService service = Actors.AsActor(RemotingTestService.class, Q_SIZE);
+        RemotingTestService service = Actors.asActor(RemotingTestService.class, Q_SIZE);
         ActorServer publisher =
             new HttpPublisher(service, "localhost", "/lp", 8082)
                 .coding(coding)
@@ -143,7 +135,7 @@ public class RemotingTest {
     @Test
     public void testHttpMany() throws Exception {
         checkSequenceErrors = false;
-        RemotingTestService service = Actors.AsActor(RemotingTestService.class, Q_SIZE);
+        RemotingTestService service = Actors.asActor(RemotingTestService.class, Q_SIZE);
         ActorServer publisher =
             new HttpPublisher(service, "localhost", "/lp", 8082)
                 .publish()
@@ -177,13 +169,13 @@ public class RemotingTest {
 
     @Test
     public void testWSJson() throws Exception {
-        Coding coding = new Coding(SerializerType.Json);
+        Coding coding = new Coding(SerializerType.JsonNoRef);
         runWS(coding);
     }
 
     public void runWS(Coding coding) throws InterruptedException {
         checkSequenceErrors = true;
-        RemotingTestService service = Actors.AsActor(RemotingTestService.class, Q_SIZE);
+        RemotingTestService service = Actors.asActor(RemotingTestService.class, Q_SIZE);
         ActorServer publisher = new WebSocketPublisher(service, "localhost", "/ws", 8081).coding(coding).publish().await();
         RemotingTestService client = (RemotingTestService)
             new WebSocketConnectable(RemotingTestService.class, "ws://localhost:8081/ws")
@@ -200,7 +192,7 @@ public class RemotingTest {
     @Test
     public void testWSMany() throws Exception {
         checkSequenceErrors = false;
-        RemotingTestService service = Actors.AsActor(RemotingTestService.class, Q_SIZE);
+        RemotingTestService service = Actors.asActor(RemotingTestService.class, Q_SIZE);
         ActorServer publisher = new WebSocketPublisher(service, "localhost", "/ws", 8081).publish().await();
         RemotingTestService client = (RemotingTestService)
             new WebSocketConnectable(RemotingTestService.class, "ws://localhost:8081/ws")
@@ -232,13 +224,13 @@ public class RemotingTest {
 
     @Test
     public void testNIOJSon() throws Exception {
-        Coding coding = new Coding(SerializerType.Json);
+        Coding coding = new Coding(SerializerType.JsonNoRef);
         runNio(coding);
     }
 
     public void runNio(Coding coding) throws Exception {
         checkSequenceErrors = true;
-        RemotingTestService service = Actors.AsActor(RemotingTestService.class, Q_SIZE);
+        RemotingTestService service = Actors.asActor(RemotingTestService.class, Q_SIZE);
         ActorServer publisher = NIOServerConnector.Publish(service, 8081, coding).await();
         CountDownLatch latch = new CountDownLatch(1);
         runnitTCP(latch,coding);
@@ -250,7 +242,7 @@ public class RemotingTest {
     @Test
     public void testNIOMany() throws Exception {
         checkSequenceErrors = false;
-        RemotingTestService service = Actors.AsActor(RemotingTestService.class, Q_SIZE);
+        RemotingTestService service = Actors.asActor(RemotingTestService.class, Q_SIZE);
         ActorServer publisher = NIOServerConnector.Publish(service, 8081, null).await();
         ExecutorService exec = Executors.newCachedThreadPool();
         CountDownLatch latch = new CountDownLatch(10);
@@ -272,7 +264,7 @@ public class RemotingTest {
     @Test
     public void testBlocking() throws Exception {
         checkSequenceErrors = true;
-        RemotingTestService service = Actors.AsActor(RemotingTestService.class, Q_SIZE);
+        RemotingTestService service = Actors.asActor(RemotingTestService.class, Q_SIZE);
         Coding coding = new Coding(SerializerType.FSTSer);
         ActorServer publisher = TCPServerConnector.Publish(service, 8081, coding).await();
         CountDownLatch latch = new CountDownLatch(1);
@@ -285,7 +277,7 @@ public class RemotingTest {
     @Test
     public void testBlockingMany() throws Exception {
         checkSequenceErrors = false;
-        RemotingTestService service = Actors.AsActor(RemotingTestService.class, Q_SIZE);
+        RemotingTestService service = Actors.asActor(RemotingTestService.class, Q_SIZE);
         ActorServer publisher = TCPServerConnector.Publish(service, 8081, null).await();
         ExecutorService exec = Executors.newCachedThreadPool();
         CountDownLatch latch = new CountDownLatch(10);
@@ -371,24 +363,6 @@ public class RemotingTest {
         Assert.assertTrue("Hello Hello".equals(client.promise("Hello").await(999999)));
 
         AtomicInteger replyCount = new AtomicInteger(0);
-        if ( spore ) {
-            ArrayList<Integer> sporeResult = new ArrayList<>();
-            Promise sporeP = new Promise();
-            client.spore(new Spore<Integer, Integer>() {
-                @Override
-                public void remote(Integer input) {
-                    stream(input);
-                }
-            }.setForEach((res, e) -> {
-                System.out.println("spore res " + res);
-                sporeResult.add(res);
-            }).onFinish(() -> {
-                System.out.println("Finish");
-                sporeP.complete();
-            }));
-            sporeP.await(30_000);
-            Assert.assertTrue(sporeResult.size() == 4);
-        }
 
         System.out.println("one way performance");
         for ( int i = 0; !ONLY_PROM && i < NUM_MSG; i++ ) {

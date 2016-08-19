@@ -73,7 +73,7 @@ public class UndertowHttpServerConnector implements ActorServerConnector, HttpHa
     Actor facade;
     HashMap<String,HttpObjectSocket> sessions = new HashMap<>(); // use only from facade thread
 
-    FSTConfiguration conf = FSTConfiguration.createJsonConfiguration(); // used for authdata
+    FSTConfiguration conf = FSTConfiguration.createJsonNoRefConfiguration(); // used for authdata
     Function<ObjectSocket, ObjectSink> factory;
     long sessionTimeout = SESSION_TIMEOUT_MS;
     volatile boolean isClosed = false;
@@ -248,7 +248,7 @@ public class UndertowHttpServerConnector implements ActorServerConnector, HttpHa
                     try {
                         sinkchannel.write(responseBuf);
                         if (responseBuf.remaining() == 0) {
-                            Log.Info(this, "client connected " + sessionId);
+                            Log.sInfo(this, "client connected " + sessionId);
                             exchange.endExchange();
                         }
                     } catch (IOException e) {
@@ -257,7 +257,7 @@ public class UndertowHttpServerConnector implements ActorServerConnector, HttpHa
                     }
                 else
                 {
-                    Log.Info(this,"client connected "+sessionId);
+                    Log.sInfo(this, "client connected " + sessionId);
                     exchange.endExchange();
                 }
             }
@@ -266,7 +266,7 @@ public class UndertowHttpServerConnector implements ActorServerConnector, HttpHa
     }
 
     protected HttpObjectSocket closeSession(String sessionId) {
-        Log.Info(this,sessionId+" closed");
+        Log.sInfo(this, sessionId + " closed");
         HttpObjectSocket httpObjectSocket = sessions.get(sessionId);
         if ( httpObjectSocket != null ) {
             httpObjectSocket.sinkClosed();
@@ -279,7 +279,7 @@ public class UndertowHttpServerConnector implements ActorServerConnector, HttpHa
         // dispatch incoming messages to actor(s)
         StreamSinkChannel sinkchannel = exchange.getResponseChannel();
         if ( sinkchannel == null ) {
-            Log.Error(this,"could not aquire response channel. rejecting request.");
+            Log.sError(this, "could not aquire response channel. rejecting request.");
             exchange.endExchange();
             return;
 //            Actor.current().delayed(10, () -> {handleClientRequest(exchange,httpObjectSocket,postData,lastSeenSequence);});
@@ -306,7 +306,7 @@ public class UndertowHttpServerConnector implements ActorServerConnector, HttpHa
             try {
                 lastClientSeq = Integer.parseInt(lastSeenSequence);
             } catch (Throwable t) {
-                Log.Warn(this,t);
+                Log.sWarn(this, t);
             }
         }
 
@@ -314,7 +314,7 @@ public class UndertowHttpServerConnector implements ActorServerConnector, HttpHa
         if (lastClientSeq > 0 ) { // if lp response message has been sent, take it from history
             byte[] msg = (byte[]) httpObjectSocket.takeStoredLPMessage(lastClientSeq + 1);
             if (msg!=null) {
-//                Log.Warn(this, "serve lp from history " + (lastClientSeq + 1) + " cur " + httpObjectSocket.getSendSequence());
+//                Log.sWarn(this, "serve lp from history " + (lastClientSeq + 1) + " cur " + httpObjectSocket.getSendSequence());
                 replyFromHistory(exchange, sinkchannel, msg);
                 return;
             }
@@ -409,7 +409,7 @@ public class UndertowHttpServerConnector implements ActorServerConnector, HttpHa
                         sinkchannel.write(responseBuf);
                     }
                 } catch (IOException e) {
-                    Log.Warn(this,e);
+                    Log.sWarn(this, e);
                 }
 //                System.out.println("syncwrite time micros:"+(System.nanoTime()-tim)/1000);
                 exchange.endExchange();
@@ -420,7 +420,10 @@ public class UndertowHttpServerConnector implements ActorServerConnector, HttpHa
         } else {
             Actors.all((List) futures).timeoutIn(REQUEST_RESULTING_FUTURE_TIMEOUT).then( () -> {
                 reply.run();
-            }).onTimeout( () -> reply.run() );
+            }).then( (r,e) -> {
+                if ( e instanceof Timeout )
+                    reply.run();
+            });
             sinkchannel.resumeWrites();
         }
     }

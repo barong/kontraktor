@@ -9,19 +9,19 @@ import org.nustaq.reallive.interfaces.*;
  * - if diff is != null => apply diff
  * - else take new Record and compare against old
  */
-public class UpdateMessage<K> implements ChangeMessage<K> {
+public class UpdateMessage implements ChangeMessage {
 
     final Diff diff;   // can be null => then just compare with current record
-    final Record<K> newRecord; // can nevere be null
+    final Record newRecord; // can nevere be null
     final boolean addIfNotExists ;
 
-    public UpdateMessage(Diff diff, Record<K> newRecord) {
+    public UpdateMessage(Diff diff, Record newRecord) {
         this.diff = diff;
         this.newRecord = newRecord;
         this.addIfNotExists = true;
     }
 
-    public UpdateMessage(Diff diff, Record<K> newRecord, boolean addIfNotExists) {
+    public UpdateMessage(Diff diff, Record newRecord, boolean addIfNotExists) {
         this.addIfNotExists = addIfNotExists;
         this.newRecord = newRecord;
         this.diff = diff;
@@ -33,13 +33,13 @@ public class UpdateMessage<K> implements ChangeMessage<K> {
     }
 
     @Override
-    public K getKey() {
+    public String getKey() {
         return newRecord.getKey();
     }
 
     @Override
     public ChangeMessage reduced(String[] reducedFields) {
-        return new UpdateMessage<K>(
+        return new UpdateMessage(
             diff.reduced(reducedFields),
             newRecord.reduced(reducedFields),
             addIfNotExists);
@@ -49,7 +49,7 @@ public class UpdateMessage<K> implements ChangeMessage<K> {
         return diff;
     }
 
-    public Record<K> getNewRecord() {
+    public Record getNewRecord() {
         return newRecord;
     }
 

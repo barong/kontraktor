@@ -38,7 +38,6 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Created by moelrue on 5/7/15.
@@ -78,7 +77,7 @@ public abstract class RemoteRegistry implements RemoteConnection {
     (actor,methodName) -> {
         Method method = actor.__getCachedMethod(methodName, actor);
         if ( method == null ) {
-            Log.Warn(null, "no such method on "+actor.getClass().getSimpleName()+"#"+methodName);
+            Log.sWarn(null, "no such method on " + actor.getClass().getSimpleName() + "#" + methodName);
         }
         if ( method == null || method.getAnnotation(Local.class) != null ) {
             return false;
@@ -113,7 +112,7 @@ public abstract class RemoteRegistry implements RemoteConnection {
     protected void configureSerialization(Coding code) {
 		conf.registerSerializer(Actor.class,new ActorRefSerializer(this),true);
 		conf.registerSerializer(CallbackWrapper.class, new CallbackRefSerializer(this), true);
-		conf.registerSerializer(Spore.class, new SporeRefSerializer(), true);
+//		conf.registerSerializer(Spore.class, new SporeRefSerializer(), true);
 		conf.registerClass(RemoteCallEntry.class);
 		conf.registerSerializer(Timeout.class, new TimeoutSerializer(), false);
 	}
@@ -159,7 +158,7 @@ public abstract class RemoteRegistry implements RemoteConnection {
     private void publishActorDirect(Long id, Actor act) {
         Object o = publishedActorMapping.get(id);
         if ( o != null && o != act.getActorRef() ) {
-            Log.Error(this,"id already present old:"+o+" new:"+act);
+            Log.sError(this, "id already present old:" + o + " new:" + act);
         }
         publishedActorMapping.put(id, act.getActorRef());
         publishedActorMappingReverse.put(act.getActorRef(), id);
@@ -175,7 +174,7 @@ public abstract class RemoteRegistry implements RemoteConnection {
     public void unpublishActor(Actor act) {
         Long integer = publishedActorMappingReverse.get(act.getActorRef());
         if ( integer != null ) {
-            Log.Debug(this, ""+act.getClass().getSimpleName()+" unpublished");
+            Log.sDebug(this, "" + act.getClass().getSimpleName() + " unpublished");
             publishedActorMapping.remove(integer);
             publishedActorMappingReverse.remove(act.getActorRef());
             act.__removeRemoteConnection(this);
@@ -220,7 +219,7 @@ public abstract class RemoteRegistry implements RemoteConnection {
     public Actor registerRemoteActorRef(Class actorClazz, long remoteId, Object client) {
         Actor actorRef = remoteActorSet.get(remoteId);
         if ( actorRef == null ) {
-            Actor res = Actors.AsActor(actorClazz, getScheduler());
+            Actor res = Actors.asActor(actorClazz, getScheduler());
             res.__remoteId = remoteId;
             remoteActorSet.put(remoteId,res);
             remoteActors.add(res);
@@ -251,7 +250,7 @@ public abstract class RemoteRegistry implements RemoteConnection {
             try {
                 removeRemoteActor(actor);
             } catch (Exception e) {
-                Log.Warn(this, e);
+                Log.sWarn(this, e);
             }
             actor.getActorRef().__stopped = true;
             Actor tmp = actor.getActor();
@@ -279,7 +278,7 @@ public abstract class RemoteRegistry implements RemoteConnection {
      */
     public boolean receiveObject(ObjectSocket responseChannel, ObjectSink receiver, Object response, List<IPromise> createdFutures) throws Exception {
         if ( response == RemoteRegistry.OUT_OF_ORDER_SEQ ) {
-            Log.Warn(this,"out of sequence remote call received");
+            Log.sWarn(this, "out of sequence remote call received");
             return false;
         }
         if ( response instanceof Object[] ) { // bundling. last element contains sequence
@@ -334,7 +333,7 @@ public abstract class RemoteRegistry implements RemoteConnection {
                             publishActorDirect(read.getReceiverKey(), targetActor);
                         }
                     } catch (Throwable th) {
-                        Log.Info(this,th);
+                        Log.sInfo(this, th);
                     }
                 }
             }
@@ -348,7 +347,7 @@ public abstract class RemoteRegistry implements RemoteConnection {
                 return true;
             }
             if (remoteCallInterceptor != null && !remoteCallInterceptor.apply(targetActor,read.getMethod())) {
-                Log.Warn(this,"remote message blocked by securityinterceptor "+targetActor.getClass().getName()+" "+read.getMethod());
+                Log.sWarn(this, "remote message blocked by securityinterceptor " + targetActor.getClass().getName() + " " + read.getMethod());
                 return false;
             }
             try {
@@ -367,12 +366,12 @@ public abstract class RemoteRegistry implements RemoteConnection {
                             if ( finalP != null )
                                 finalP.complete();
                         } catch (Exception ex) {
-                            Log.Warn(this, ex, "");
+                            Log.sWarn(this, ex, "");
                         }
                     });
                 }
             } catch (Throwable th) {
-                Log.Warn(this,th);
+                Log.sWarn(this, th);
                 if ( read.getFutureKey() > 0 ) {
                     receiveCBResult(objSocket, read.getFutureKey(), null, FSTUtil.toString(th));
                 } else {
@@ -388,9 +387,9 @@ public abstract class RemoteRegistry implements RemoteConnection {
                 if ( read.getArgs() != null && read.getArgs().length == 2 && read.getArgs()[1] instanceof InternalActorStoppedException ) {
                     // FIXME: this might happen frequently as messages are in flight.
                     // FIXME: need a better way to handle this. Frequently it is not an error.
-                    Log.Warn(this,"call to stopped remote actor");
+                    Log.sWarn(this, "call to stopped remote actor");
                 } else
-                    Log.Warn(this,"Publisher already deregistered, set error to 'Actor.CONT' in order to signal more messages will be sent. "+read);
+                    Log.sWarn(this, "Publisher already deregistered, set error to 'Actor.CONT' in order to signal more messages will be sent. " + read);
             } else {
                 publishedCallback.complete(read.getArgs()[0], read.getArgs()[1]); // is a wrapper enqueuing in caller
                 if (!isContinue)
@@ -434,7 +433,7 @@ public abstract class RemoteRegistry implements RemoteConnection {
         try {
             chan.writeObject(rce);
         } catch (Exception e) {
-            Log.Debug(this,"a connection closed '"+e.getMessage()+"', terminating registry");
+            Log.sDebug(this, "a connection closed '" + e.getMessage() + "', terminating registry");
             disconnect();
         }
     }
@@ -464,7 +463,7 @@ public abstract class RemoteRegistry implements RemoteConnection {
         try {
             getWriteObjectSocket().get().flush();
         } catch (Exception e) {
-            Log.Warn(this,e);
+            Log.sWarn(this, e);
         }
         cleanUp();
     }
@@ -597,7 +596,7 @@ public abstract class RemoteRegistry implements RemoteConnection {
         if ( server != null )
             return server.close();
         else {
-            Log.Warn(null, "failed closing underlying network connection as server is null");
+            Log.sWarn(null, "failed closing underlying network connection as server is null");
             return new Promise<>(null,"server is null");
         }
     }

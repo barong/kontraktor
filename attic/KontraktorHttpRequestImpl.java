@@ -35,25 +35,25 @@ public class KontraktorHttpRequestImpl implements KontraktorHttpRequest // avoid
     }
 
     public void append(ByteBuffer buf, int len) {
-        Log.Info(this,"PARTIAL READ");
+        Log.sInfo(this, "PARTIAL READ");
         if ( !hadHeader()) {
-            Log.Info(this,"..complete header");
+            Log.sInfo(this, "..complete header");
             byte[] newbytes = new byte[bytes.length + len];
             System.arraycopy(bytes, 0, newbytes, 0, bytes.length);
             buf.get(newbytes, bytes.length, len);
             bytes = newbytes;
             checkComplete();
-            Log.Info(this,"..complete:" + isComplete());
+            Log.sInfo(this, "..complete:" + isComplete());
         } else {
-            Log.Info(this,"..complete body");
+            Log.sInfo(this, "..complete body");
             byte[] tmp = new byte[len];
             buf.get(tmp);
             try {
                 text.append(new String(tmp,"UTF-8"));
                 isComplete = text.length() >= contentLength;
-                Log.Info(this,"..complete:"+isComplete()+" text:"+text.length()+" cont:"+contentLength);
+                Log.sInfo(this, "..complete:" + isComplete() + " text:" + text.length() + " cont:" + contentLength);
             } catch (UnsupportedEncodingException e) {
-                Log.Warn(this,e,"");
+                Log.sWarn(this, e, "");
                 isComplete = true;
             }
         }
@@ -73,7 +73,7 @@ public class KontraktorHttpRequestImpl implements KontraktorHttpRequest // avoid
                     isComplete = text.length() >= contentLength;
                     bytes = null; // free headerbytes
                 } catch (UnsupportedEncodingException e) {
-                    Log.Warn(this,e,"");
+                    Log.sWarn(this, e, "");
                     isComplete = true;
                 }
                 return;

@@ -22,14 +22,14 @@ public class BroadcastWithResultExample extends ReceiverActor {
      */
     public void pingLoop() {
         if ( ! isStopped() ) {
-            Log.Info(this, "----------- START MULTI RESPONSE REQUEST ------------");
+            Log.sInfo(this, "----------- START MULTI RESPONSE REQUEST ------------");
             mediator.askSubscribers(self(), "defaultTopic", "Hello from " + myName,
                 (reply, error) -> {
                     if (Actors.isComplete(error)) {
-                        Log.Info(this,"----------- ALL RESULTS RECEIVED ------------");
+                        Log.sInfo(this, "----------- ALL RESULTS RECEIVED ------------");
                         delayed(5000, () -> pingLoop());
                     } else {
-                        Log.Info(this,"=>" + reply);
+                        Log.sInfo(this, "=>" + reply);
                     }
                 });
         }
@@ -40,7 +40,7 @@ public class BroadcastWithResultExample extends ReceiverActor {
     }
 
     public static void main(String[] args) {
-        BroadcastWithResultExample receiver = Actors.AsActor(BroadcastWithResultExample.class);
+        BroadcastWithResultExample receiver = Actors.asActor(BroadcastWithResultExample.class);
         receiver.init();
     }
 

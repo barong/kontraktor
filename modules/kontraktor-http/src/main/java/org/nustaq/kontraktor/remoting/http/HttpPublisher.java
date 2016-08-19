@@ -96,7 +96,7 @@ public class HttpPublisher implements ActorPublisher, Cloneable {
             actorServer.start(disconnectCallback);
             serverPair.getFirst().addPrefixPath(urlPath, con);
         } catch (Exception e) {
-            Log.Warn(null, e);
+            Log.sWarn(null, e);
             return new Promise<>(null,e);
         }
         return new Promise<>(actorServer);

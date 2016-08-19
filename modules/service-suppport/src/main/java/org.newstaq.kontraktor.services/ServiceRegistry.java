@@ -76,7 +76,7 @@ public class ServiceRegistry {
 //            try {
 //                cb.stream(msg);
 //            } catch (Throwable th) {
-//                Log.Info(this, th);
+//                Log.sInfo(this, th);
 //            }
 //        });
 //    }
@@ -88,7 +88,7 @@ public class ServiceRegistry {
 //            try {
 //                cb.stream(msg);
 //            } catch (Throwable th) {
-//                Log.Info(this, th);
+//                Log.sInfo(this, th);
 //                listeners.remove(i);
 //                i--;
 //            }
@@ -161,16 +161,16 @@ public class ServiceRegistry {
 //
 //        options = parseCommandLine(args,new ServiceArgs());
 //
-//        ServiceRegistry sreg = Actors.AsActor(ServiceRegistry.class);
+//        ServiceRegistry sreg = Actors.asActor(ServiceRegistry.class);
 //        sreg.init();
 //
 //        new TCPNIOPublisher(sreg,DEFAULT_PORT).publish(actor -> {
-//            Log.Info(null, actor + " has disconnected");
+//            Log.sInfo(null, actor + " has disconnected");
 //        });
 //
 //        // log service activity
 //        sreg.subscribe((pair, err) -> {
-//            Log.Info(sreg.getClass(), pair.car() + " " + pair.cdr());
+//            Log.sInfo(sreg.getClass(), pair.car() + " " + pair.cdr());
 //        });
 //
 //    }

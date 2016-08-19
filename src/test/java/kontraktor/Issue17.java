@@ -6,11 +6,9 @@ import org.nustaq.kontraktor.remoting.base.ConnectableActor;
 import org.nustaq.kontraktor.remoting.encoding.SerializerType;
 import org.nustaq.kontraktor.remoting.tcp.TCPConnectable;
 import org.nustaq.kontraktor.remoting.tcp.TCPNIOPublisher;
-import org.nustaq.kontraktor.remoting.tcp.TCPPublisher;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.locks.LockSupport;
 
 import static org.nustaq.kontraktor.Actors.*;
 
@@ -33,7 +31,7 @@ public class Issue17 {
         }
 
         static void testRemote() throws InterruptedException {
-            HelloActor myService = AsActor(HelloActor.class, 1_000_000);
+            HelloActor myService = asActor(HelloActor.class, 1_000_000);
 
             Thread tpub = new Thread() {
                 public void run() {

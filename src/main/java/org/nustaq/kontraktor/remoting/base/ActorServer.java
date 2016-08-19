@@ -97,7 +97,7 @@ public class ActorServer {
             reg.setFacadeActor(facade);
             reg.publishActor(facade);
             reg.setServer(this);
-            Log.Info(this, "connected a client with registry "+System.identityHashCode(reg));
+            Log.sInfo(this, "connected a client with registry " + System.identityHashCode(reg));
             return new ObjectSink() {
 
                 @Override

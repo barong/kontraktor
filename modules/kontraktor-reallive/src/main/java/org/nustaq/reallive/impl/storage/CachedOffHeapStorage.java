@@ -1,6 +1,5 @@
 package org.nustaq.reallive.impl.storage;
 
-import org.nustaq.kontraktor.Spore;
 import org.nustaq.reallive.impl.StorageDriver;
 import org.nustaq.reallive.interfaces.Record;
 import org.nustaq.reallive.interfaces.RecordStorage;
@@ -13,50 +12,47 @@ import java.util.stream.Stream;
 /**
  * Created by ruedi on 08/12/15.
  */
-public class CachedOffHeapStorage implements RecordStorage<String> {
+public class CachedOffHeapStorage implements RecordStorage {
 
     OffHeapRecordStorage offheap;
-    HeapRecordStorage<String> onHeap;
+    HeapRecordStorage onHeap;
 
-    public CachedOffHeapStorage(OffHeapRecordStorage offheap, HeapRecordStorage<String> onHeap) {
+    public CachedOffHeapStorage(OffHeapRecordStorage offheap, HeapRecordStorage onHeap) {
         this.offheap = offheap;
         this.onHeap = onHeap;
         List<Record> reput = new ArrayList<>();
-        offheap.forEach(new Spore<Record<String>, Object>() {
-            @Override
-            public void remote(Record<String> input) {
-                Record unwrap = StorageDriver.unwrap(input);
-                if ( unwrap != input ) {
-                    reput.add(unwrap);
-                }
-                if ( unwrap.getClass() != MapRecord.recordClass && MapRecord.conversion != null ) {
-                    unwrap = MapRecord.conversion.apply((MapRecord) unwrap);
-                    reput.add(unwrap);
-                }
-                onHeap.put(input.getKey(), unwrap);
+        offheap.stream().forEach( input -> {
+            Record unwrap = StorageDriver.unwrap(input);
+            if ( unwrap != input ) {
+                reput.add(unwrap);
             }
+            if ( unwrap.getClass() != MapRecord.recordClass && MapRecord.conversion != null ) {
+                unwrap = MapRecord.conversion.apply((MapRecord) unwrap);
+                reput.add(unwrap);
+            }
+            onHeap.put(input.getKey(), unwrap);
         });
         for (int i = 0; i < reput.size(); i++) {
             Record record = reput.get(i);
-            offheap.put((String) record.getKey(),record);
+            offheap.put(record.getKey(),record);
         }
     }
 
     @Override
-    public RecordStorage put(String key, Record<String> value) {
+    public RecordStorage put(String key, Record value) {
         offheap.put(key,value);
         onHeap.put(key,value);
         return this;
     }
 
     @Override
-    public Record<String> get(String key) {
+    public Record get(String key) {
         return onHeap.get(key);
     }
 
     @Override
-    public Record<String> remove(String key) {
-        Record<String> res = offheap.remove(key);
+    public Record remove(String key) {
+        Record res = offheap.remove(key);
         onHeap.remove(key);
         return res;
     }
@@ -72,13 +68,8 @@ public class CachedOffHeapStorage implements RecordStorage<String> {
     }
 
     @Override
-    public Stream<Record<String>> stream() {
+    public Stream<Record> stream() {
         return onHeap.stream();
-    }
-
-    @Override
-    public <T> void forEach(Spore<Record<String>, T> spore) {
-        onHeap.forEach(spore);
     }
 
 }

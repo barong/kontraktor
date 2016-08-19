@@ -33,7 +33,7 @@ public class HelloActor extends Actor<HelloActor> {
 
     public static void main(String a[]) {
 
-        HelloActor myService = AsActor(HelloActor.class);
+        HelloActor myService = asActor(HelloActor.class);
 
         // as websocket service fast serialialized
         new WebSocketPublisher()

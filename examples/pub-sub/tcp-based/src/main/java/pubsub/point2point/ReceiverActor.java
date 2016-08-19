@@ -17,10 +17,10 @@ public class ReceiverActor extends Actor<ReceiverActor> {
     MediatorActor mediator;
 
     public void init() {
-        Log.Info(this, "my name is "+myName);
+        Log.sInfo(this, "my name is " + myName);
         mediator = (MediatorActor) new WebSocketConnectable(MediatorActor.class,"ws://localhost:9090/")
             .connect( null, acc -> {
-                Log.Info(this, "lost connection, stopping");
+                Log.sInfo(this, "lost connection, stopping");
                 self().stop();
                 System.exit(0);
             }).await();
@@ -44,7 +44,7 @@ public class ReceiverActor extends Actor<ReceiverActor> {
     }
 
     public static void main(String[] args) {
-        ReceiverActor receiver = Actors.AsActor(ReceiverActor.class);
+        ReceiverActor receiver = Actors.asActor(ReceiverActor.class);
         receiver.init();
     }
 

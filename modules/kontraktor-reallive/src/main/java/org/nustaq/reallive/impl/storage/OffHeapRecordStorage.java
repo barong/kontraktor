@@ -1,10 +1,8 @@
 package org.nustaq.reallive.impl.storage;
 
-import org.nustaq.kontraktor.Spore;
 import org.nustaq.offheap.FSTAsciiStringOffheapMap;
 import org.nustaq.offheap.FSTBinaryOffheapMap;
 import org.nustaq.offheap.FSTSerializedOffheapMap;
-import org.nustaq.offheap.FSTUTFStringOffheapMap;
 import org.nustaq.reallive.interfaces.*;
 import org.nustaq.serialization.FSTConfiguration;
 import org.nustaq.serialization.simpleapi.DefaultCoder;
@@ -12,8 +10,6 @@ import org.nustaq.serialization.simpleapi.FSTCoder;
 import org.nustaq.serialization.util.FSTUtil;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.stream.Stream;
@@ -22,13 +18,13 @@ import java.util.stream.StreamSupport;
 /**
  * Created by moelrue on 05.08.2015.
  */
-public class OffHeapRecordStorage implements RecordStorage<String> {
+public class OffHeapRecordStorage implements RecordStorage {
 
     private static final boolean DEBUG = false;
     OutputStream protocol;
     FSTCoder coder;
 
-    FSTSerializedOffheapMap<String,Record<String>> store;
+    FSTSerializedOffheapMap<String,Record> store;
     int keyLen;
 
     protected OffHeapRecordStorage() {}
@@ -66,11 +62,11 @@ public class OffHeapRecordStorage implements RecordStorage<String> {
             store = createMemMap(sizeMB, estimatedNumRecords, keyLen);
     }
 
-    protected FSTSerializedOffheapMap<String,Record<String>> createMemMap(int sizeMB, int estimatedNumRecords, int keyLen) {
-        return new FSTAsciiStringOffheapMap<Record<String>>(keyLen, FSTBinaryOffheapMap.MB*sizeMB,estimatedNumRecords, coder);
+    protected FSTSerializedOffheapMap<String,Record> createMemMap(int sizeMB, int estimatedNumRecords, int keyLen) {
+        return new FSTAsciiStringOffheapMap<Record>(keyLen, FSTBinaryOffheapMap.MB*sizeMB,estimatedNumRecords, coder);
     }
 
-    protected FSTSerializedOffheapMap<String,Record<String>> createPersistentMap(String tableFile, int sizeMB, int estimatedNumRecords, int keyLen) throws Exception {
+    protected FSTSerializedOffheapMap<String,Record> createPersistentMap(String tableFile, int sizeMB, int estimatedNumRecords, int keyLen) throws Exception {
         return new FSTAsciiStringOffheapMap<>(tableFile, keyLen, FSTBinaryOffheapMap.MB*sizeMB,estimatedNumRecords, coder);
     }
 
@@ -85,7 +81,7 @@ public class OffHeapRecordStorage implements RecordStorage<String> {
     }
 
     @Override
-    public RecordStorage put(String key, Record<String> value) {
+    public RecordStorage put(String key, Record value) {
         if ( protocol != null ) {
             try {
                 FSTConfiguration.getDefaultConfiguration().encodeToStream(protocol,new Object[] {"put",key,value});
@@ -108,13 +104,13 @@ public class OffHeapRecordStorage implements RecordStorage<String> {
     }
 
     @Override
-    public Record<String> get(String key) {
+    public Record get(String key) {
         checkThread();
         return store.get(key);
     }
 
     @Override
-    public Record<String> remove(String key) {
+    public Record remove(String key) {
         if ( protocol != null ) {
             try {
                 FSTConfiguration.getDefaultConfiguration().encodeToStream(protocol,new Object[] {"remove",key});
@@ -123,7 +119,7 @@ public class OffHeapRecordStorage implements RecordStorage<String> {
                 e.printStackTrace();
             }
         }
-        Record<String> v = get(key);
+        Record v = get(key);
         if ( v != null )
             store.remove(key);
         return v;
@@ -135,20 +131,10 @@ public class OffHeapRecordStorage implements RecordStorage<String> {
     }
 
     @Override
-    public Stream<Record<String>> stream() {
+    public Stream<Record> stream() {
         return StreamSupport.stream(
             Spliterators.spliteratorUnknownSize(store.values(), Spliterator.IMMUTABLE),
             false);
     }
 
-    @Override
-    public <T> void forEach(Spore<Record<String>, T> spore) {
-        for (Iterator iterator = store.values(); iterator.hasNext(); ) {
-            Record<String> record = (Record<String>) iterator.next();
-            spore.remote(record);
-            if ( spore.isFinished() )
-                break;
-        }
-        spore.finish();
-    }
 }

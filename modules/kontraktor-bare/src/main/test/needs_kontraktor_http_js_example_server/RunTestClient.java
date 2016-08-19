@@ -106,7 +106,7 @@ public class RunTestClient {
                     }
                     for (int i = 0; i < res.length; i++) {
                         if (!res[i]) {
-                            System.out.println("Error " + i);
+                            System.out.println("sError " + i);
                         }
                     }
                     System.out.println("100k future calls took " + (System.currentTimeMillis() - tim) + " ms");

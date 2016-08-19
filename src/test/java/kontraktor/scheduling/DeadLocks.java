@@ -34,7 +34,7 @@ public class DeadLocks {
     }
 
     public static void main( String arg[] ) {
-        SelfDeadLocker dl = Actors.AsActor(SelfDeadLocker.class,1000);
+        SelfDeadLocker dl = Actors.asActor(SelfDeadLocker.class, 1000);
         Promise end = new Promise();
         dl.deadLock(end,true);
         end.then((r, e) -> {
@@ -42,7 +42,7 @@ public class DeadLocks {
             dl.stop();
         });
 
-        SelfDeadLocker dl1 = Actors.AsActor(SelfDeadLocker.class,1000);
+        SelfDeadLocker dl1 = Actors.asActor(SelfDeadLocker.class, 1000);
         Promise end1 = new Promise();
         dl1.deadLock(end1, false);
         end1.then((r, e) -> {

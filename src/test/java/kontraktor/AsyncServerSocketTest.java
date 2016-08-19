@@ -171,20 +171,20 @@ public class AsyncServerSocketTest {
 
 //    @Test @Ignore
     public void plain() throws InterruptedException {
-        Actors.AsActor(TA.class).serve();
+        Actors.asActor(TA.class).serve();
         Thread.sleep(1000000l);
     }
 
 //    @Test @Ignore
     public void queued() throws InterruptedException {
-        TA ta = Actors.AsActor(TA.class);
+        TA ta = Actors.asActor(TA.class);
         ta.serve1();
         Thread.sleep(1000000l);
     }
 
     @Test
     public void serial() throws Exception {
-        TA ta = Actors.AsActor(TA.class);
+        TA ta = Actors.asActor(TA.class);
         ta.serve2().await();
         ExecutorService executorService = Executors.newCachedThreadPool();
         HashMap testMap = new HashMap();
@@ -304,7 +304,7 @@ public class AsyncServerSocketTest {
 
         System.out.println("file len " + f.length());
 
-        TA ta = Actors.AsActor(TA.class);
+        TA ta = Actors.asActor(TA.class);
         ta.serve3(8081).await();
         RateMeasure intFreq = new RateMeasure("int per sec");
 

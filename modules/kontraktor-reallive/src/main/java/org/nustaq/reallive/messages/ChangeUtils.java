@@ -75,7 +75,7 @@ public class ChangeUtils {
         return res;
     }
 
-    public static <K> Diff diff(Record<K> record, Record<K> prevRecord) {
+    public static Diff diff(Record record, Record prevRecord) {
         String[] fields = merge(record.getFields(), prevRecord.getFields());
         return mayCopyAndDiff(record,prevRecord,fields,false);
     }

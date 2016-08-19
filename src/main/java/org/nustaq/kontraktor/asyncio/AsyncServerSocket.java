@@ -129,18 +129,18 @@ public class AsyncServerSocket {
                                         try {
                                             client.close();
                                         } catch (IOException e) {
-                                            Log.Warn(this, e);
+                                            Log.sWarn(this, e);
                                         }
                                     }
                                 }
                             }
                         }
                     } catch (Throwable e) {
-                        Log.Warn(this,e,"");
+                        Log.sWarn(this, e, "");
                     }
                 }
             } catch (Throwable e) {
-                Log.Warn(this,e,"");
+                Log.sWarn(this, e, "");
                 Actors.reject(e);
             }
         } while (iterCount-- > 0 && hadStuff );
@@ -154,17 +154,17 @@ public class AsyncServerSocket {
             // close open connections
             try {
                 selector.selectNow();
-                Actors.SubmitDelayed(TCPServerConnector.DELAY_MS_TILL_CLOSE, () -> {
+                Actors.submitDelayed(TCPServerConnector.DELAY_MS_TILL_CLOSE, () -> {
                     selector.selectedKeys().forEach(key -> {
                         try {
                             key.channel().close();
                         } catch (IOException e) {
-                            Log.Warn(this, e);
+                            Log.sWarn(this, e);
                         }
                     });
                 });
             } catch (IOException e) {
-                Log.Warn(this,e);
+                Log.sWarn(this, e);
             }
 
         }

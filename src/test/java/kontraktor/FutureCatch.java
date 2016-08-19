@@ -21,7 +21,7 @@ public class FutureCatch {
 
         public IPromise<String> error(int num) {
             Promise res = new Promise();
-            delayed(500, () -> res.complete(null, "Error " + num));
+            delayed(500, () -> res.complete(null, "sError " + num));
             return res;
         }
 
@@ -85,7 +85,7 @@ public class FutureCatch {
 
     @Test
     public void testTimeout() {
-        FutCatch futCatch = AsActor(FutCatch.class);
+        FutCatch futCatch = asActor(FutCatch.class);
         int suc = 0;
         try {
             futCatch.result(12).timeoutIn(100).await();
@@ -118,7 +118,7 @@ public class FutureCatch {
 
     @Test
     public void testESY() {
-        final FutCatch futCatch = AsActor(FutCatch.class);
+        final FutCatch futCatch = asActor(FutCatch.class);
         Integer sync = futCatch.testAwait().await();
         System.out.println("Done");
         assertTrue(sync.intValue() == 6);
@@ -128,13 +128,13 @@ public class FutureCatch {
     @Test
     public void testFut() throws InterruptedException {
         AtomicBoolean res = new AtomicBoolean(true);
-        final FutCatch futCatch = AsActor(FutCatch.class);
+        final FutCatch futCatch = asActor(FutCatch.class);
         AtomicInteger count = new AtomicInteger(0);
 
         futCatch.error(1)
             .then( r -> System.out.println("NEVER SHOULD BE CALLED") )
             .then( () -> System.out.println("oops") )
-            .catchError(err -> {
+            .then((r,err) -> {
                 System.out.println("the expected error");
                 count.incrementAndGet();
             });
@@ -178,7 +178,7 @@ public class FutureCatch {
                count.addAndGet(5);
                return futCatch.result(4);
            })
-           .catchError(error -> {
+           .then( (r,error) -> {
                count.addAndGet(5);
                System.out.println("catched " + error);
            })
