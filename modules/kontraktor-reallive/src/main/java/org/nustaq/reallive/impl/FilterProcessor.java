@@ -83,17 +83,11 @@ public class FilterProcessor implements ChangeReceiver {
             boolean matchesNew = subscriber.getFilter().test(newRecord);
 
             if ( matchesNew ) {
-                final PatchingRecord patchingRecord = FilterSpore.rec.get();
-                patchingRecord.reset(newRecord);
                 matchesNew = subscriber.getFilter().test(newRecord);
-                newRecord = patchingRecord.unwrapOrCopy();
             }
 
             if ( matchesOld ) {
-                final PatchingRecord patchingRecord = FilterSpore.rec.get();
-                patchingRecord.reset(oldRec);
                 matchesOld = subscriber.getFilter().test(oldRec);
-                oldRec = patchingRecord.unwrapOrCopy();
             }
 
             // commented conditions are redundant
@@ -111,10 +105,7 @@ public class FilterProcessor implements ChangeReceiver {
         Record record = add.getRecord();
         for ( Subscriber subscriber : filterList ) {
             if ( subscriber.getFilter().test(record) ) {
-                final PatchingRecord patchingRecord = FilterSpore.rec.get();
-                patchingRecord.reset(record);
-                if ( subscriber.getFilter().test(patchingRecord))
-                    subscriber.getReceiver().receive(new AddMessage(add.isUpdateIfExisting(),patchingRecord.unwrapOrCopy()));
+                subscriber.getReceiver().receive(new AddMessage(add.isUpdateIfExisting(),record));
             }
         }
     }
@@ -123,9 +114,7 @@ public class FilterProcessor implements ChangeReceiver {
         Record record = remove.getRecord();
         for ( Subscriber subscriber : filterList ) {
             if ( subscriber.getFilter().test(record) ) {
-                final PatchingRecord patchingRecord = FilterSpore.rec.get();
-                patchingRecord.reset(record);
-                if ( subscriber.getFilter().test(patchingRecord))
+                if ( subscriber.getFilter().test(record))
                     subscriber.getReceiver().receive((ChangeMessage)remove);
             }
         }

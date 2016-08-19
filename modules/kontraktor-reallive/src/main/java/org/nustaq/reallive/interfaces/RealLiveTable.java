@@ -5,7 +5,6 @@ import org.nustaq.kontraktor.Callback;
 import org.nustaq.kontraktor.IPromise;
 import org.nustaq.kontraktor.Promise;
 import org.nustaq.kontraktor.annotations.CallerSideMethod;
-import org.nustaq.reallive.impl.FilterSpore;
 import org.nustaq.reallive.impl.QueryPredicate;
 import org.nustaq.reallive.impl.RLUtil;
 import org.nustaq.reallive.impl.StorageDriver;
@@ -101,8 +100,6 @@ public interface RealLiveTable extends ChangeReceiver, ChangeStream {
     /**
      * adds a new record. If the record exists, its a NOP
      *
-     * @param key
-     * @param keyVals
      */
     void add(Record rec);
 
@@ -111,8 +108,6 @@ public interface RealLiveTable extends ChangeReceiver, ChangeStream {
      * merge is performed. Note that null values are ignored so its not possible
      * to null out existing record field values.
      *
-     * @param key
-     * @param keyVals
      */
     void addOrUpdateRec(Record rec);
 
