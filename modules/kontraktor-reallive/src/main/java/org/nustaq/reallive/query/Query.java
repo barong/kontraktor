@@ -1,5 +1,7 @@
 package org.nustaq.reallive.query;
 
+import org.nustaq.reallive.interfaces.RLSupplier;
+
 import java.util.HashMap;
 
 /**

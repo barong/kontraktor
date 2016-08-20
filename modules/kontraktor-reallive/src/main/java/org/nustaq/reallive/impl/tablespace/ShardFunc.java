@@ -1,4 +1,4 @@
-package org.nustaq.reallive.impl.actors;
+package org.nustaq.reallive.impl.tablespace;
 
 import java.io.Serializable;
 

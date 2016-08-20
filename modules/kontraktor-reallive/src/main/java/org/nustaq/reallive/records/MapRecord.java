@@ -29,10 +29,10 @@ public class MapRecord implements Record {
         return null;
     }
 
-    protected Map<String,Object> map = new HashMap<>();
+    protected String key;
 
     protected String fields[];
-    protected String key;
+    protected Map<String,Object> map = new HashMap<>();
 
     protected MapRecord() {
     }

@@ -4,21 +4,17 @@ import org.junit.Test;
 import org.nustaq.kontraktor.Actor;
 import org.nustaq.kontraktor.Actors;
 import org.nustaq.kontraktor.IPromise;
-import org.nustaq.kontraktor.Promise;
 import org.nustaq.kontraktor.util.PromiseLatch;
-import org.nustaq.reallive.impl.actors.RealLiveTableActor;
-import org.nustaq.reallive.impl.actors.ShardFunc;
-import org.nustaq.reallive.impl.actors.TableSharding;
-import org.nustaq.reallive.impl.tablespace.TableSpaceActor;
+import org.nustaq.reallive.impl.tablespace.RealLiveTableActor;
+import org.nustaq.reallive.impl.tablespace.ShardFunc;
+import org.nustaq.reallive.impl.tablespace.TableSharding;
 import org.nustaq.reallive.interfaces.*;
 import org.nustaq.reallive.impl.*;
 import org.nustaq.reallive.impl.storage.*;
-import org.nustaq.reallive.records.MapRecord;
 
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.IntStream;
 
 /**
  * Created by ruedi on 04.08.2015.

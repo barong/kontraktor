@@ -1,4 +1,4 @@
-package org.nustaq.reallive.query;
+package org.nustaq.reallive.interfaces;
 
 import java.io.Serializable;
 import java.util.function.Supplier;

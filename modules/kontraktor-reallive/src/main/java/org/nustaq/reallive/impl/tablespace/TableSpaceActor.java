@@ -3,7 +3,6 @@ package org.nustaq.reallive.impl.tablespace;
 import org.nustaq.kontraktor.*;
 import org.nustaq.kontraktor.annotations.Local;
 import org.nustaq.kontraktor.impl.SimpleScheduler;
-import org.nustaq.reallive.impl.actors.RealLiveTableActor;
 import org.nustaq.reallive.impl.storage.CachedOffHeapStorage;
 import org.nustaq.reallive.impl.storage.HeapRecordStorage;
 import org.nustaq.reallive.impl.storage.OffHeapRecordStorage;
@@ -28,7 +27,7 @@ public class TableSpaceActor extends Actor<TableSpaceActor> implements TableSpac
     String baseDir;
 
     @Local
-    public void init( int numScanThreads, int numFilterThreads ) {
+    public void init() {
         tables = new HashMap<>();
         stateListeners = new ArrayList<>();
         tableDesc = new HashMap<>();

@@ -19,6 +19,7 @@
  */
 package org.nustaq.reallive.query;
 
+import org.nustaq.reallive.interfaces.RLSupplier;
 import org.nustaq.reallive.records.MapRecord;
 
 import java.util.*;

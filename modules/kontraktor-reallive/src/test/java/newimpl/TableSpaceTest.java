@@ -9,9 +9,7 @@ import org.nustaq.reallive.impl.tablespace.TableSpaceActor;
 import org.nustaq.reallive.impl.tablespace.TableSpaceSharding;
 import org.nustaq.reallive.interfaces.*;
 
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-import java.util.stream.IntStream;
 
 /**
  * Created by ruedi on 14.08.2015.
@@ -23,7 +21,7 @@ public class TableSpaceTest {
     @Test
     public void simple() {
         TableSpaceActor ts = Actors.asActor(TableSpaceActor.class);
-        ts.init(4, 0);
+        ts.init();
         Assert.assertTrue( runSimpleTest(ts, () -> createTableDescription() ) == EXPECT_SIMPLECOUNT );
         ts.shutDown().await();
     }
@@ -36,7 +34,7 @@ public class TableSpaceTest {
         };
         for (int i = 0; i < spaces.length; i++) {
             TableSpaceActor space = spaces[i];
-            space.init(2,0);
+            space.init();
         }
         TableSpaceSharding ts = new TableSpaceSharding( spaces, key -> Math.abs(key.hashCode())%spaces.length );
         Assert.assertTrue(runSimpleTest(ts, () -> createShardedTableDescription()) == EXPECT_SIMPLECOUNT);
@@ -59,7 +57,7 @@ public class TableSpaceTest {
             .await();
        for (int i = 0; i < spaces.length; i++) {
             TableSpaceActor space = spaces[i];
-            space.init(2,0);
+            space.init();
         }
         TableSpaceSharding ts = new TableSpaceSharding( spaces, key -> Math.abs(key.hashCode())%spaces.length );
         Assert.assertTrue(runSimpleTest(ts, () -> createShardedTableDescription()) == EXPECT_SIMPLECOUNT);
@@ -94,7 +92,7 @@ public class TableSpaceTest {
 
     public TableSpaceActor startServer() {
         TableSpaceActor ts = Actors.asActor(TableSpaceActor.class);
-        ts.init(4, 0);
+        ts.init();
         new TCPNIOPublisher(ts,5432).publish(actor -> System.out.println("sidconnected: " + actor));
         return ts;
     }
@@ -103,7 +101,7 @@ public class TableSpaceTest {
     public void startShardServer() throws InterruptedException {
         startServer();
         TableSpaceActor ts = Actors.asActor(TableSpaceActor.class);
-        ts.init(4, 0);
+        ts.init();
         new TCPNIOPublisher(ts,5433).publish(actor -> System.out.println("sidconnected: " + actor));
         Thread.sleep(1000000);
     }

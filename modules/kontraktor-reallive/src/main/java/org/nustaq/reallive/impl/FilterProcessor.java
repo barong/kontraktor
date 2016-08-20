@@ -1,6 +1,6 @@
 package org.nustaq.reallive.impl;
 
-import org.nustaq.reallive.impl.actors.RealLiveTableActor;
+import org.nustaq.reallive.impl.tablespace.RealLiveTableActor;
 import org.nustaq.reallive.interfaces.*;
 import org.nustaq.reallive.messages.*;
 import org.nustaq.reallive.records.*;
