@@ -31,6 +31,11 @@ import java.util.function.Consumer;
 
 /**
  * Created by ruedi on 09/05/15.
+ *
+ * Basic server class exposing an actor ('facade') to the network.
+ * Concrete message encoding and type of physical link (tcp,websockets, http) is delegated and
+ * not part of this.
+ *
  */
 public class ActorServer {
 
