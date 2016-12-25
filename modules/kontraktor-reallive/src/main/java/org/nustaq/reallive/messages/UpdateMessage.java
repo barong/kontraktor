@@ -1,6 +1,9 @@
 package org.nustaq.reallive.messages;
 
 import org.nustaq.reallive.interfaces.*;
+import org.nustaq.reallive.records.MapRecord;
+
+import java.util.*;
 
 /**
  * Created by moelrue on 03.08.2015.
@@ -14,17 +17,28 @@ public class UpdateMessage implements ChangeMessage {
     final Diff diff;   // can be null => then just compare with current record
     final Record newRecord; // can nevere be null
     final boolean addIfNotExists ;
+    Set<String> forcedUpdateFields;
 
-    public UpdateMessage(Diff diff, Record newRecord) {
+    public UpdateMessage(Diff diff, Record newRecord,Set<String> forcedUpdateFields) {
         this.diff = diff;
         this.newRecord = newRecord;
         this.addIfNotExists = true;
+        this.forcedUpdateFields = forcedUpdateFields;
     }
 
-    public UpdateMessage(Diff diff, Record newRecord, boolean addIfNotExists) {
+    public UpdateMessage(Diff diff, Record newRecord, Set<String> forcedUpdateFields, boolean addIfNotExists) {
         this.addIfNotExists = addIfNotExists;
         this.newRecord = newRecord;
         this.diff = diff;
+        this.forcedUpdateFields = forcedUpdateFields;
+    }
+
+    public Set<String> getForcedUpdateFields() {
+        return forcedUpdateFields;
+    }
+
+    public void setForcedUpdateFields(Set<String> forcedUpdateFields) {
+        this.forcedUpdateFields = forcedUpdateFields;
     }
 
     @Override
@@ -42,6 +56,7 @@ public class UpdateMessage implements ChangeMessage {
         return new UpdateMessage(
             diff.reduced(reducedFields),
             newRecord.reduced(reducedFields),
+            forcedUpdateFields,
             addIfNotExists);
     }
 
@@ -55,6 +70,23 @@ public class UpdateMessage implements ChangeMessage {
 
     public boolean isAddIfNotExists() {
         return addIfNotExists;
+    }
+
+    public Record getOldRecord() {
+        if ( diff.getChangedFields() != null && diff.getChangedFields().length > 0 ) {
+            Record copied = getNewRecord().copied();
+            for (int i = 0; i < diff.getChangedFields().length; i++) {
+                String k = diff.getChangedFields()[i];
+                copied.put(k,diff.getOldValues()[i]);
+            }
+            return copied;
+        }
+        return getRecord().copied();
+    }
+
+    @Override
+    public Record getRecord() {
+        return getNewRecord();
     }
 
     @Override

@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  */
 public class ProcessStarter extends Actor<ProcessStarter> {
 
+    public static final int RESTART_EXIT_VAL = 99;
     // discovery time = 2 * TICK_M
     public static int TICK_MILLIS = 3_000;
 
@@ -224,14 +225,18 @@ public class ProcessStarter extends Actor<ProcessStarter> {
                 // check if processes died
                 processes = processes.entrySet().stream()
                     .filter(en -> {
-                        if (en.getValue().getProc() == null) {
-                            if (!siblings.containsKey(en.getValue().getStarterId())) // host died
+                        ProcessInfo procInfo = en.getValue();
+                        if (procInfo.getProc() == null) {
+                            if (!siblings.containsKey(procInfo.getStarterId())) // host died
                             {
                                 return false;
                             }
                         } else {
-                            if (!en.getValue().getProc().isAlive()) {
-                                self().distribute(TERMINATED, en.getValue(), null);
+                            if (!procInfo.getProc().isAlive()) {
+                                self().distribute(TERMINATED, procInfo, null);
+                                if ( procInfo.getProc().exitValue() == RESTART_EXIT_VAL) {
+                                    self().startProcessBySpec(procInfo.getSpec());
+                                }
                                 return false;
                             }
                         }
@@ -332,13 +337,11 @@ public class ProcessStarter extends Actor<ProcessStarter> {
                         if ( finalFout != null ) {
                             finalFout.write(read);
                         } else {
-                            if ( read > 0 )
+                            if ( read > 0 ) {
                                 System.out.write(read);
-                            else if ( read < 0 ) {
-                                break;
                             } else {
                                 try {
-                                    Thread.sleep(1);
+                                    Thread.sleep(10);
                                 } catch (InterruptedException e) {
                                     e.printStackTrace();
                                 }
