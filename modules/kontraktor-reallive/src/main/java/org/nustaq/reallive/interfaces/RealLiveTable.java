@@ -31,15 +31,6 @@ public interface RealLiveTable extends ChangeReceiver, ChangeStream {
     IPromise<StorageStats> getStats();
     IPromise<Long> size();
 
-    IPromise<Boolean> putCAS(RLPredicate<Record> casCondition, String key, Object[] keyVals);
-    void atomic(String key, RLConsumer<Record> action);
-    IPromise atomicQuery(String key, RLFunction<Record, Object> action);
-
-    /**
-     * @param filter
-     * @param action - return true in order to update record, false in order to remove the record
-     */
-    void atomicUpdate(RLPredicate<Record> filter, RLFunction<Record<K>,Boolean> action);
     /**
      * return record with given key or null
      *

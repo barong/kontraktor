@@ -72,7 +72,7 @@ public class StorageDriver implements ChangeReceiver {
                     Diff diff = ChangeUtils.copyAndDiff(addMessage.getRecord(), prevRecord);
                     Record newRecord = unwrap(prevRecord); // clarification
                     store.put(change.getKey(),newRecord);
-                    listener.receive( new UpdateMessage<>(diff,newRecord,null) );
+                    listener.receive( new UpdateMessage(diff,newRecord,null) );
                 } else {
                     store.put(change.getKey(),unwrap(addMessage.getRecord()));
                     listener.receive(addMessage);
@@ -111,7 +111,7 @@ public class StorageDriver implements ChangeReceiver {
                     Diff diff = ChangeUtils.copyAndDiff(updateMessage.getNewRecord(), oldRec);
                     Record newRecord = unwrap(oldRec); // clarification
                     store.put(change.getKey(),newRecord);
-                    listener.receive( new UpdateMessage<>(diff,newRecord,change.getForcedUpdateFields()) );
+                    listener.receive( new UpdateMessage(diff,newRecord,change.getForcedUpdateFields()) );
                 } else {
                     // old values are actually not needed inside the diff
                     // however they are needed in a change notification for filter processing (need to reconstruct prev record)
