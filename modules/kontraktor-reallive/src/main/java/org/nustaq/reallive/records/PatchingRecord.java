@@ -98,10 +98,11 @@ public class PatchingRecord extends RecordWrapper {
             return null;
         Object update[] = new Object[override.size()*2];
         int idx = 0;
-        for (Iterator iterator = override.map.entrySet().iterator(); iterator.hasNext(); ) {
-            Map.Entry next = (Map.Entry) iterator.next();
-            update[idx++] = next.getKey();
-            update[idx++] = next.getValue();
+        String[] fields = override.map.getFields();
+        Object[] values = override.map.getValues();
+        for (int i = 0; i < fields.length; i++) {
+            update[idx++] = fields[i];
+            update[idx++] = values[i];
         }
         return RLUtil.get().updateWithForced(getKey(),forcedUpdate,update);
     }

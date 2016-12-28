@@ -3,8 +3,6 @@ package org.nustaq.reallive.records;
 import org.nustaq.reallive.interfaces.*;
 import org.nustaq.reallive.impl.RLUtil;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Function;
 
 /**
@@ -31,8 +29,7 @@ public class MapRecord implements Record {
 
     protected String key;
 
-    protected String fields[];
-    protected Map<String,Object> map = new HashMap<>();
+    protected IRecordMap map = new ArrayRecordMap();
 
     protected MapRecord() {
     }
@@ -65,11 +62,7 @@ public class MapRecord implements Record {
 
     @Override
     public String[] getFields() {
-        if (fields==null) {
-            fields = new String[map.size()];
-            map.keySet().toArray(fields);
-        }
-        return fields;
+        return map.getFields();
     }
 
     @Override
@@ -80,11 +73,10 @@ public class MapRecord implements Record {
     @Override
     public MapRecord put(String field, Object value) {
         field=field.intern();
-        if ( map.put(field, value) == null ) {
-            fields = null;
-        }
         if (value == null)
             map.remove(field);
+        else
+            map.put(field, value);
         return this;
     }
 
