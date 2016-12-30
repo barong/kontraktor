@@ -59,7 +59,6 @@ public class BasicWebApp extends Actor<BasicWebApp> implements HttpSyncActorAdap
         context.service.init( new TCPConnectable(ServiceRegistry.class, options.getGravityHost(), options.getGravityPort() ), options, true).await();
     }
 
-
     @Override
     public void handleRequest(HttpServerExchange exchange) {
         String response = "<html>"+exchange.getRequestPath()+" response</html>";
