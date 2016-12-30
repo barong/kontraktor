@@ -14,7 +14,7 @@ import org.nustaq.kontraktor.IPromise;
 public class HttpSyncActorAdaptorHandler implements HttpHandler {
 
     public interface AsyncHttpHandler {
-        IPromise handleRequest(HttpServerExchange exchange);
+        void handleRequest(HttpServerExchange exchange);
     }
 
     AsyncHttpHandler asyncHandler;
@@ -25,7 +25,8 @@ public class HttpSyncActorAdaptorHandler implements HttpHandler {
 
     @Override
     public void handleRequest(HttpServerExchange exchange) throws Exception {
-        asyncHandler.handleRequest(exchange).await();
+        exchange.dispatch();
+        asyncHandler.handleRequest(exchange);
     }
 
     public AsyncHttpHandler getAsyncHandler() {

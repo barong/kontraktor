@@ -1,4 +1,4 @@
-package org.nustaq.kontraktor.services;
+package org.nustaq.kontraktor.services.base;
 
 import com.beust.jcommander.Parameter;
 import org.nustaq.kontraktor.util.Log;
@@ -33,7 +33,7 @@ public class ServiceArgs {
         try {
             host = InetAddress.getLocalHost().getHostName();
         } catch (UnknownHostException e) {
-            Log.Warn(this,e);
+            Log.sWarn(this,e);
         }
     }
 

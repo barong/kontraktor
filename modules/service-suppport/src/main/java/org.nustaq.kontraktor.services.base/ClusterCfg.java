@@ -1,6 +1,6 @@
-package org.nustaq.kontraktor.services;
+package org.nustaq.kontraktor.services.base;
 
-import org.nustaq.kontraktor.services.rlclient.DataCfg;
+import org.nustaq.kontraktor.services.base.rlclient.DataCfg;
 import org.nustaq.kontraktor.util.Log;
 import org.nustaq.kson.Kson;
 import org.nustaq.reallive.interfaces.TableDescription;
@@ -35,7 +35,7 @@ public class ClusterCfg {
             System.out.println(confString);
             return clCfg;
         } catch (Exception e) {
-            Log.Warn(null, pathname + " not found or parse error. " + e.getClass().getSimpleName() + ":" + e.getMessage());
+            Log.sWarn(null, pathname + " not found or parse error. " + e.getClass().getSimpleName() + ":" + e.getMessage());
             try {
                 String sampleconf = kson.writeObject(new ClusterCfg());
                 System.out.println("Defaulting to:\n"+sampleconf);
@@ -47,6 +47,7 @@ public class ClusterCfg {
     }
 
     String publicHostUrl = "http://localhost:8888";
+    int webServerSessionThreads = 8;
 
     DataCfg dataCluster = new DataCfg();
     public DataCfg getDataCluster() {
@@ -58,6 +59,9 @@ public class ClusterCfg {
         return this;
     }
 
+    public int getWebServerSessionThreads() {
+        return webServerSessionThreads;
+    }
 
     public static void main(String[] args) {
         ClusterCfg read = read();

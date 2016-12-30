@@ -1,6 +1,6 @@
-package org.nustaq.kontraktor.services.rlclient;
+package org.nustaq.kontraktor.services.base.rlclient;
 
-import org.nustaq.kontraktor.services.ServiceActor;
+import org.nustaq.kontraktor.services.base.ServiceActor;
 import org.nustaq.kontraktor.Actors;
 import org.nustaq.kontraktor.Callback;
 import org.nustaq.kontraktor.IPromise;
@@ -56,8 +56,8 @@ public class DataClient<T extends DataClient> extends ClusteredTableSpaceClient<
     }
 
     @CallerSideMethod
-    public RealLiveTable<String> getTableSync( String name ) {
-        return (RealLiveTable<String>) getActor().syncTableAccess.get(name);
+    public RealLiveTable getTableSync( String name ) {
+        return (RealLiveTable) getActor().syncTableAccess.get(name);
     }
     /**
      * @param directory
@@ -80,10 +80,10 @@ public class DataClient<T extends DataClient> extends ClusteredTableSpaceClient<
                     CountDownLatch pl = new CountDownLatch(shards.length);
                     for (int i = 0; i < shards.length; i++) {
                         TableSpaceActor shard = shards[i];
-                        Log.Info( this, "exporting shard "+i+" table "+desc.getName() );
+                        Log.sInfo( this, "exporting shard "+i+" table "+desc.getName() );
                         try {
                             RealLiveTable table = shard.getTable(desc.getName()).await(60_000);
-                            table.filter( rec -> true, (rec,err) -> {
+                            table.queryAll( rec -> true, null, (rec,err) -> {
                                 if ( rec != null ) {
                                     try {
                                         // write marker to enable recovery in case of corruption
@@ -97,33 +97,33 @@ public class DataClient<T extends DataClient> extends ClusteredTableSpaceClient<
                                             fout.write(b);
                                         }
                                     } catch (IOException e) {
-                                        Log.Error(this,e);
+                                        Log.sError(this,e);
                                     }
                                 } else if (err != null ) {
-                                    Log.Warn(this,"error during export "+err);
+                                    Log.sWarn(this,"error during export "+err);
                                     pl.countDown();
                                 } else { // fin
                                     pl.countDown();
                                 }
                             });
                         } catch (Exception e) {
-                            Log.Error(this,"export failure "+desc.getName()+" shard "+i);
+                            Log.sError(this,"export failure "+desc.getName()+" shard "+i);
                         }
                     }
                     try {
                         boolean succ = pl.await(5, TimeUnit.MINUTES);
                         if ( ! succ )
-                            Log.Error(this,"export timed out on table "+desc.getName());
+                            Log.sError(this,"export timed out on table "+desc.getName());
                         try {
                             fout.close();
                         } catch (IOException e) {
-                            Log.Error(this, e);
+                            Log.sError(this, e);
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 } catch (FileNotFoundException e) {
-                    Log.Error(this,e);
+                    Log.sError(this,e);
                 }
             });
             res.complete();
@@ -135,11 +135,11 @@ public class DataClient<T extends DataClient> extends ClusteredTableSpaceClient<
         return resolve(shards.length);
     }
 
-    public void processSharded( String tableName, RLPredicate<Record<String>> predicate, int shardNo, Callback<Record> cb  ) {
+    public void processSharded( String tableName, RLPredicate<Record> predicate, int shardNo, Callback<Record> cb  ) {
         TableSpaceActor shard = shards[shardNo];
         shard.getTable(tableName).then( t -> {
             RealLiveTable table = t;
-            table.filter(predicate, cb);
+            table.queryAll(predicate, null, cb);
         });
     }
 

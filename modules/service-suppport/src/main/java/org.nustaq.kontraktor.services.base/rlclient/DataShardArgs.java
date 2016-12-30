@@ -1,7 +1,7 @@
-package org.nustaq.kontraktor.services.rlclient;
+package org.nustaq.kontraktor.services.base.rlclient;
 
 import com.beust.jcommander.Parameter;
-import org.nustaq.kontraktor.services.ServiceArgs;
+import org.nustaq.kontraktor.services.base.ServiceArgs;
 
 /**
  * Created by ruedi on 15.08.2015.

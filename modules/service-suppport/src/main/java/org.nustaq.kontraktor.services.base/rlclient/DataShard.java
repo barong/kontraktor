@@ -1,9 +1,9 @@
-package org.nustaq.kontraktor.services.rlclient;
+package org.nustaq.kontraktor.services.base.rlclient;
 
-import org.nustaq.kontraktor.services.ServiceActor;
-import org.nustaq.kontraktor.services.ServiceArgs;
-import org.nustaq.kontraktor.services.ServiceDescription;
-import org.nustaq.kontraktor.services.ServiceRegistry;
+import org.nustaq.kontraktor.services.base.ServiceActor;
+import org.nustaq.kontraktor.services.base.ServiceArgs;
+import org.nustaq.kontraktor.services.base.ServiceDescription;
+import org.nustaq.kontraktor.services.base.ServiceRegistry;
 import org.nustaq.kontraktor.Actors;
 import org.nustaq.kontraktor.IPromise;
 import org.nustaq.kontraktor.Promise;
@@ -44,13 +44,13 @@ public class DataShard extends ServiceActor<DataShard> {
 
     protected void initTableSpace() {
         DataCfg dataCfg = config.getDataCluster();
-        tableSpace = Actors.AsActor( TableSpaceActor.class );
+        tableSpace = Actors.asActor( TableSpaceActor.class );
         String dir = dataCfg.getDataDir()[getCmdline().getShardNo()];
         new File(dir).mkdirs();
         tableSpace.setBaseDataDir(dir);
-        tableSpace.init(dataCfg.getThreadsPerShard(),0);
+        tableSpace.init();
         tableSpace.ping().await();
-        Log.Info(this, "init tablespace in "+
+        Log.sInfo(this, "init tablespace in "+
             dataCfg.getDataDir()[getCmdline().getShardNo()]+
             " shard "+ getCmdline().getShardNo()+" of "+dataCfg.getNumberOfShards()
         );
@@ -81,9 +81,9 @@ public class DataShard extends ServiceActor<DataShard> {
     }
 
     public static void main(String[] args) {
-        DataShard ds = Actors.AsActor(DataShard.class,256000);
+        DataShard ds = Actors.asActor(DataShard.class,256000);
         DataShardArgs options = (DataShardArgs) ServiceRegistry.parseCommandLine(args, new DataShardArgs());
         ds.init(new TCPConnectable(ServiceRegistry.class, options.getGravityHost(), options.getGravityPort()), options, true); // .await(); fail ..
-        Log.Info(ds.getClass(), "Init finished");
+        Log.sInfo(ds.getClass(), "Init finished");
     }
 }

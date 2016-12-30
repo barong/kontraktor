@@ -1,4 +1,4 @@
-package org.nustaq.kontraktor.services;
+package org.nustaq.kontraktor.services.base;
 
 import com.beust.jcommander.JCommander;
 import org.nustaq.kontraktor.Actor;
@@ -52,9 +52,9 @@ public class ServiceRegistry extends Actor<ServiceRegistry> {
     public void serviceDumper() {
         if ( ! isStopped() ) {
             try {
-                Log.Info(this, "------");
-                services.forEach((k, sd) -> Log.Info(this,""+sd) );
-                Log.Info(this, "------");
+                Log.sInfo(this, "------");
+                services.forEach((k, sd) -> Log.sInfo(this,""+sd) );
+                Log.sInfo(this, "------");
 
                 listeners.forEach( cb -> {
                     cb.stream(new Pair(SERVICEDUMP, services));
@@ -65,7 +65,7 @@ public class ServiceRegistry extends Actor<ServiceRegistry> {
                     listeners.forEach(cb -> cb.stream(new Pair(CONFIGUPDATE, config)));
                 }
             } catch (Exception e) {
-                Log.Error(this,e);
+                Log.sError(this,e);
             }
             delayed(10000, () -> serviceDumper());
         }
@@ -98,7 +98,7 @@ public class ServiceRegistry extends Actor<ServiceRegistry> {
             try {
                 cb.stream(msg);
             } catch (Throwable th) {
-                Log.Info(this, th);
+                Log.sInfo(this, th);
             }
         });
     }
@@ -110,7 +110,7 @@ public class ServiceRegistry extends Actor<ServiceRegistry> {
             try {
                 cb.stream(msg);
             } catch (Throwable th) {
-                Log.Info(this, th);
+                Log.sInfo(this, th);
                 listeners.remove(i);
                 i--;
             }
@@ -183,20 +183,20 @@ public class ServiceRegistry extends Actor<ServiceRegistry> {
         options = parseCommandLine(args,new ServiceArgs());
 
         if ( ! options.isSysoutlog() ) {
-            Log.SetSynchronous();
+            Log.setSynchronous();
 //            Log.Lg.setLogWrapper(new Log4j2LogWrapper(Log.Lg.getSeverity()));
         }
 
-        ServiceRegistry serviceRegistry = Actors.AsActor(ServiceRegistry.class);
+        ServiceRegistry serviceRegistry = Actors.asActor(ServiceRegistry.class);
         serviceRegistry.init();
 
         new TCPNIOPublisher(serviceRegistry,options.getGravityPort()).publish(actor -> {
-            Log.Info(null, actor + " has disconnected");
+            Log.sInfo(null, actor + " has disconnected");
         });
 
         // log service activity
         serviceRegistry.subscribe((pair, err) -> {
-            Log.Info(serviceRegistry.getClass(), pair.car() + " " + pair.cdr());
+            Log.sInfo(serviceRegistry.getClass(), pair.car() + " " + pair.cdr());
         });
 
     }

@@ -1,7 +1,7 @@
-package org.nustaq.kontraktor.services;
+package org.nustaq.kontraktor.services.base;
 
-import org.nustaq.kontraktor.services.rlclient.DataClient;
-import org.nustaq.kontraktor.services.rlclient.DataShard;
+import org.nustaq.kontraktor.services.base.rlclient.DataClient;
+import org.nustaq.kontraktor.services.base.rlclient.DataShard;
 import org.nustaq.kontraktor.Actor;
 import org.nustaq.kontraktor.Actors;
 import org.nustaq.kontraktor.IPromise;
@@ -32,45 +32,45 @@ public abstract class ServiceActor<T extends ServiceActor> extends Actor<T> {
         this.cmdline = options;
 
         if ( ! options.isSysoutlog() ) {
-            Log.SetSynchronous();
+            Log.setSynchronous();
 //            Log.Lg.setLogWrapper(new Log4j2LogWrapper(Log.Lg.getSeverity()));
         }
 
-        Log.Info(this, "startup options " + options);
-        Log.Info(this, "connecting to gravity ..");
+        Log.sInfo(this, "startup options " + options);
+        Log.sInfo(this, "connecting to gravity ..");
         gravity = (ServiceRegistry) gravityConnectable.connect((conn, err) -> {
-            Log.Warn(null,"gravity disconnected");
+            Log.sWarn(null,"gravity disconnected");
             gravityDisconnected();
         }).await();
 
-        Log.Info(this, "connected gravity.");
+        Log.sInfo(this, "connected gravity.");
 
         config = gravity.getConfig().await();
 
-        Log.Info(this, "loaded cluster configuration");
+        Log.sInfo(this, "loaded cluster configuration");
         requiredServices = new HashMap<>();
         Arrays.stream(getAllServiceNames()).forEach(sname -> requiredServices.put(sname, UNCONNECTED));
 
-        Log.Info(this, "waiting for required services ..");
+        Log.sInfo(this, "waiting for required services ..");
         awaitRequiredServices().await();
         if (needsDataCluster()) {
-            Log.Info(this, "init datacluster client");
+            Log.sInfo(this, "init datacluster client");
             int nShards = config.getDataCluster().getNumberOfShards();
             DataShard shards[] =  new DataShard[nShards];
             TableSpaceActor tsShard[] = new TableSpaceActor[nShards];
             for ( int i = 0; i < nShards; i++ ) {
                 shards[i] = getService(DataShard.DATA_SHARD_NAME + i);
-                Log.Info(this,"connect to shard "+i);
+                Log.sInfo(this,"connect to shard "+i);
                 tsShard[i] = shards[i].getTableSpace().await();
             }
-            Log.Info(this, "dc connected all shards");
+            Log.sInfo(this, "dc connected all shards");
 
-            dclient = Actors.AsActor(DataClient.class);
+            dclient = Actors.asActor(DataClient.class);
             dclient.connect(config.getDataCluster(),tsShard,self()).await();
 
-            Log.Info(this, "dc init done");
+            Log.sInfo(this, "dc init done");
         }
-        Log.Info(this, "got all required services ..");
+        Log.sInfo(this, "got all required services ..");
 
         // all required services are there, now
         // publish self as available service
@@ -98,18 +98,18 @@ public abstract class ServiceActor<T extends ServiceActor> extends Actor<T> {
             serviceEvent(pair.car(), pair.cdr(), err);
         });
         heartBeat();
-        Log.Info(this, "registered at gravity.");
+        Log.sInfo(this, "registered at gravity.");
     }
 
     protected void publishSelf() {
         int defaultPort = getPort();
         // service does not expose itself
         if ( defaultPort <= 0 ) {
-            Log.Warn(this,"Service "+getServiceDescription().getName()+" has no port and host configured. Unpublished.");
+            Log.sWarn(this,"Service "+getServiceDescription().getName()+" has no port and host configured. Unpublished.");
             return;
         }
         new TCPNIOPublisher(self(), defaultPort).publish(actor -> {
-            Log.Info(null, actor + " has disconnected");
+            Log.sInfo(null, actor + " has disconnected");
         });
     }
 
@@ -158,7 +158,7 @@ public abstract class ServiceActor<T extends ServiceActor> extends Actor<T> {
     }
 
     protected void requiredSerivceWentDown( ServiceDescription cdr ) {
-        Log.Error(this,"required service went down. Shutting down. :"+cdr);
+        Log.sError(this,"required service went down. Shutting down. :"+cdr);
         self().stop();
     }
 
@@ -170,7 +170,7 @@ public abstract class ServiceActor<T extends ServiceActor> extends Actor<T> {
     }
 
     public IPromise awaitRequiredServices() {
-        Log.Info(this, "connecting required services ..");
+        Log.sInfo(this, "connecting required services ..");
         if ( requiredServices.size() == 0 ) {
             return resolve();
         }
@@ -183,14 +183,14 @@ public abstract class ServiceActor<T extends ServiceActor> extends Actor<T> {
                 ServiceDescription serviceDescription = smap.get(servName);
                 if (serviceDescription != null && requiredServices.get(servName) instanceof Actor == false) {
                     if ( serviceDescription.getConnectable() == null ) {
-                        Log.Error(this, "No connecteable defined for service "+serviceDescription.getName() );
+                        Log.sError(this, "No connecteable defined for service "+serviceDescription.getName() );
                     }
                     IPromise<Object> connect;
                     try {
-                        Log.Info(this,"connect "+serviceDescription.getConnectable());
+                        Log.sInfo(this,"connect "+serviceDescription.getConnectable());
                         connect = serviceDescription.getConnectable().connect();
                     } catch (Throwable th) {
-                        Log.Error(this, th, "failed to connect "+serviceDescription.getName() );
+                        Log.sError(this, th, "failed to connect "+serviceDescription.getName() );
                         continue;
                     }
                     Promise notify = new Promise();
@@ -211,11 +211,7 @@ public abstract class ServiceActor<T extends ServiceActor> extends Actor<T> {
             }
             if ( ! res.isSettled() ) {
                 all(servicePromis).timeoutIn(15000)
-                    .then(res)
-                    .onTimeout(() -> {
-                        // todo:retry
-                        Log.Info(this, "failed to connect required services, retry");
-                    });
+                    .then(res);
             }
         });
         return res;

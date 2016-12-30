@@ -98,7 +98,13 @@
         <dependency>
             <groupId>de.ruedigermoeller</groupId>
             <artifactId>reallive</artifactId>
-            <version>3.28.01</version>
+            <version>4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.ruedigermoeller</groupId>
+            <artifactId>kontraktor-http</artifactId>
+            <version>4.0</version>
         </dependency>
 
         <!-- commandline parsing -->
